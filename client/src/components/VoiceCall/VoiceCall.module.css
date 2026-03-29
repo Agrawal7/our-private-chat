@@ -1,0 +1,129 @@
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.95);
+  backdrop-filter: blur(20px);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.3s ease;
+}
+
+.container {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 60px;
+  padding: 48px 64px;
+  text-align: center;
+  animation: slideUp 0.3s ease;
+  min-width: 320px;
+}
+
+.icon {
+  font-size: 72px;
+  margin-bottom: 24px;
+  animation: pulse 1s infinite;
+}
+
+.duration {
+  font-size: 28px;
+  font-weight: 600;
+  color: white;
+  font-family: monospace;
+  margin-bottom: 32px;
+  letter-spacing: 1px;
+}
+
+.controls {
+  display: flex;
+  gap: 24px;
+  justify-content: center;
+}
+
+.controlButton, .endButton {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  border: none;
+  font-size: 32px;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+.controlButton:hover:not(:disabled), .endButton:hover {
+  transform: scale(1.1);
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.controlButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.endButton {
+  background: #ef4444;
+}
+
+.endButton:hover {
+  background: #dc2626;
+  transform: scale(1.1);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 32px 40px;
+    min-width: 280px;
+  }
+  
+  .icon {
+    font-size: 56px;
+  }
+  
+  .duration {
+    font-size: 24px;
+  }
+  
+  .controlButton, .endButton {
+    width: 60px;
+    height: 60px;
+    font-size: 28px;
+  }
+}

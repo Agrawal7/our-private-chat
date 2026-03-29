@@ -1,0 +1,14 @@
+:root {
+  --primary-gradient: linear-gradient(135deg, #6366f1, #4f46e5);
+  --secondary-gradient: linear-gradient(135deg, #22c55e, #16a34a);
+  --danger-gradient: linear-gradient(135deg, #ef4444, #dc2626);
+  --bg-dark: #020617;
+  --bg-card: rgba(30, 41, 59, 0.6);
+  --bg-chat: rgba(2, 6, 23, 0.7);
+  --text-primary: #e2e8f0;
+  --text-secondary: #94a3b8;
+  --accent: #818cf8;
+  --border: rgba(255, 255, 255, 0.05);
+  --shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}

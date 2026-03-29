@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <meta name="theme-color" content="#667eea" />
+    <meta name="description" content="OurRoom - Private 1-on-1 chat rooms. Instant, secure, no account needed." />
+    
+    <!-- Security headers to prevent inspection -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+    <meta http-equiv="X-Frame-Options" content="DENY" />
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
+    
+    <title>OurRoom | Private 1-on-1 Chat</title>
+    
+    <style>
+      /* Disable text selection globally */
+      * {
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+      }
+      
+      /* Allow text selection only in input fields and textareas */
+      input, textarea, [contenteditable="true"] {
+        -webkit-touch-callout: text;
+        -webkit-user-select: text;
+        -khtml-user-select: text;
+        -moz-user-select: text;
+        -ms-user-select: text;
+        user-select: text;
+      }
+      
+      /* Prevent image dragging */
+      img {
+        -webkit-user-drag: none;
+        user-drag: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    
+    <script>
+      // Disable right-click context menu
+      document.addEventListener('contextmenu', function(e) {
+        e.preventDefault();
+        return false;
+      });
+      
+      // Disable keyboard shortcuts
+      document.addEventListener('keydown', function(e) {
+        // Disable F12 (DevTools)
+        if (e.key === 'F12') {
+          e.preventDefault();
+          return false;
+        }
+        
+        // Disable Ctrl+Shift+I (DevTools)
+        if (e.ctrlKey && e.shiftKey && e.key === 'I') {
+          e.preventDefault();
+          return false;
+        }
+        
+        // Disable Ctrl+Shift+J (DevTools Console)
+        if (e.ctrlKey && e.shiftKey && e.key === 'J') {
+          e.preventDefault();
+          return false;
+        }
+        
+        // Disable Ctrl+Shift+C (Inspect Element)
+        if (e.ctrlKey && e.shiftKey && e.key === 'C') {
+          e.preventDefault();
+          return false;
+        }
+        
+        // Disable Ctrl+U (View Source)
+        if (e.ctrlKey && e.key === 'u') {
+          e.preventDefault();
+          return false;
+        }
+        
+        // Disable Ctrl+S (Save)
+        if (e.ctrlKey && e.key === 's') {
+          e.preventDefault();
+          return false;
+        }
+        
+        // Disable Ctrl+P (Print)
+        if (e.ctrlKey && e.key === 'p') {
+          e.preventDefault();
+          return false;
+        }
+        
+        // Disable Ctrl+C (Copy) - but allow in input fields
+        if (e.ctrlKey && e.key === 'c' && !e.target.matches('input, textarea')) {
+          e.preventDefault();
+          return false;
+        }
+        
+        // Disable Ctrl+X (Cut) - but allow in input fields
+        if (e.ctrlKey && e.key === 'x' && !e.target.matches('input, textarea')) {
+          e.preventDefault();
+          return false;
+        }
+        
+        // Disable Ctrl+V (Paste) - but allow in input fields
+        if (e.ctrlKey && e.key === 'v' && !e.target.matches('input, textarea')) {
+          e.preventDefault();
+          return false;
+        }
+        
+        // Disable Ctrl+A (Select All) - but allow in input fields
+        if (e.ctrlKey && e.key === 'a' && !e.target.matches('input, textarea')) {
+          e.preventDefault();
+          return false;
+        }
+        
+        // Disable Ctrl+R (Refresh)
+        if (e.ctrlKey && e.key === 'r') {
+          e.preventDefault();
+          return false;
+        }
+        
+        // Disable Ctrl+Shift+R (Hard Refresh)
+        if (e.ctrlKey && e.shiftKey && e.key === 'R') {
+          e.preventDefault();
+          return false;
+        }
+        
+        // Disable F5 (Refresh)
+        if (e.key === 'F5') {
+          e.preventDefault();
+          return false;
+        }
+      });
+      
+      // Disable drag and drop
+      document.addEventListener('dragstart', function(e) {
+        if (!e.target.matches('input, textarea')) {
+          e.preventDefault();
+          return false;
+        }
+      });
+      
+      // Disable copy from console
+      setInterval(function() {
+        if (typeof console !== 'undefined' && console.clear) {
+          console.clear();
+        }
+      }, 1000);
+      
+      // Detect DevTools opening
+      (function() {
+        const devtools = {
+          isOpen: false,
+          orientation: undefined
+        };
+        
+        const threshold = 160;
+        const checkDevTools = function() {
+          const widthDiff = window.outerWidth - window.innerWidth > threshold;
+          const heightDiff = window.outerHeight - window.innerHeight > threshold;
+          devtools.isOpen = widthDiff || heightDiff;
+          
+          if (devtools.isOpen) {
+            // DevTools is open - you can add a warning or redirect
+            console.clear();
+            // Optional: Show a message
+            // alert('Developer tools are disabled for this application');
+          }
+        };
+        
+        setInterval(checkDevTools, 1000);
+      })();
+    </script>
+  </body>
+</html>
