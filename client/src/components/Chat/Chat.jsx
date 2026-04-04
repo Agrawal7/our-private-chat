@@ -18,6 +18,7 @@ const Chat = ({
   const [isCallActive, setIsCallActive] = useState(false);
   const [incomingCall, setIncomingCall] = useState(null);
   const [showScrollButton, setShowScrollButton] = useState(false);
+  const [replyToMessage, setReplyToMessage] = useState(null); // New state for reply
   
   const messagesEndRef = useRef(null);
   const messagesContainerRef = useRef(null);
@@ -73,6 +74,21 @@ const Chat = ({
       scrollToBottom();
     }, 100);
   }, []);
+
+  // Handle reply from message drag
+  const handleReply = (message) => {
+    setReplyToMessage(message);
+    // Focus on message input
+    const messageInput = document.querySelector('input[type="text"]');
+    if (messageInput) {
+      messageInput.focus();
+    }
+  };
+
+  // Cancel reply
+  const cancelReply = () => {
+    setReplyToMessage(null);
+  };
 
   // Listen for incoming calls
   useEffect(() => {
@@ -154,6 +170,29 @@ const Chat = ({
     return 'partner';
   };
 
+  // Handle sending message with reply
+  const handleSendMessage = (msg) => {
+    const messageData = {
+      room,
+      author: name,
+      message: msg,
+      senderId: currentUserId,
+      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    };
+    
+    // Add reply data if replying to a message
+    if (replyToMessage) {
+      messageData.replyTo = {
+        id: replyToMessage.id || Date.now(),
+        author: replyToMessage.author || replyToMessage.displayName,
+        message: replyToMessage.message
+      };
+      setReplyToMessage(null);
+    }
+    
+    socket.emit('send_message', messageData);
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -179,6 +218,21 @@ const Chat = ({
         </div>
       </div>
 
+      {/* Reply Preview Bar - Shows when replying to a message */}
+      {replyToMessage && (
+        <div className={styles.replyPreviewBar}>
+          <div className={styles.replyPreviewContent}>
+            <span className={styles.replyPreviewText}>
+              ↩️ Replying to <strong>{replyToMessage.author || replyToMessage.displayName}</strong>: 
+              "{replyToMessage.message.substring(0, 50)}{replyToMessage.message.length > 50 ? '...' : ''}"
+            </span>
+            <button onClick={cancelReply} className={styles.cancelReplyBtn}>
+              ✖️ Cancel
+            </button>
+          </div>
+        </div>
+      )}
+
       {incomingCall && (
         <div className={styles.incomingCall}>
           <div className={styles.incomingCallContent}>
@@ -198,6 +252,7 @@ const Chat = ({
             <div className={styles.welcomeMessage}>
               <div className={styles.welcomeIcon}>🐦</div>
               <p>Connected! Start chatting with {getOtherUserName()}.</p>
+              <small className={styles.dragHint}>💡 Tip: Drag any message to the right to reply!</small>
             </div>
           ) : (
             <>
@@ -207,6 +262,7 @@ const Chat = ({
                   message={msg} 
                   isOwn={msg.senderId === currentUserId}
                   currentUserId={currentUserId}
+                  onReply={handleReply}
                 />
               ))}
               <div ref={messagesEndRef} />
@@ -230,15 +286,7 @@ const Chat = ({
         <div className={styles.inputArea}>
           <div className={styles.inputWrapper}>
             <MessageInput 
-              onSendMessage={(msg) => {
-                socket.emit('send_message', {
-                  room,
-                  author: name,
-                  message: msg,
-                  senderId: currentUserId,
-                  time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-                });
-              }}
+              onSendMessage={handleSendMessage}
               onTyping={() => {
                 socket.emit('typing', { room, author: name });
               }}

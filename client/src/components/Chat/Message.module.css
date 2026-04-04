@@ -131,3 +131,127 @@
     font-size: 9px;
   }
 }
+
+/* Add these styles to your existing Message.module.css */
+
+/* Draggable message indicator */
+.message[draggable="true"] {
+  cursor: grab;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.message[draggable="true"]:active {
+  cursor: grabbing;
+}
+
+.message[draggable="true"]:hover {
+  opacity: 0.9;
+  transform: translateX(4px);
+}
+
+/* Reply indicator while dragging */
+.replyIndicator {
+  position: fixed;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 40px;
+  font-size: 12px;
+  pointer-events: none;
+  z-index: 9999;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  animation: bounce 0.3s ease;
+  white-space: nowrap;
+  transform: translate(-50%, -50%);
+}
+
+@keyframes bounce {
+  0% {
+    transform: translate(-50%, -50%) scale(0.8);
+    opacity: 0;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+}
+
+/* Reply preview in message */
+.replyPreview {
+  background: rgba(0, 0, 0, 0.05);
+  border-left: 3px solid #667eea;
+  border-radius: 12px;
+  padding: 8px 12px;
+  margin-bottom: 8px;
+  font-size: 12px;
+}
+
+.own .replyPreview {
+  background: rgba(255, 255, 255, 0.15);
+  border-left-color: white;
+}
+
+.replyHeader {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: #667eea;
+  margin-bottom: 4px;
+  font-weight: 600;
+}
+
+.own .replyHeader {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.replyIcon {
+  font-size: 12px;
+}
+
+.replyContent {
+  font-size: 11px;
+  color: #6b7280;
+  font-style: italic;
+  word-wrap: break-word;
+}
+
+.own .replyContent {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* Drag hint tooltip */
+.dragHint {
+  position: absolute;
+  bottom: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 10px;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.message:hover .dragHint {
+  opacity: 1;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .replyIndicator {
+    font-size: 10px;
+    padding: 6px 12px;
+    white-space: normal;
+    max-width: 200px;
+    text-align: center;
+  }
+  
+  .replyPreview {
+    max-width: 100%;
+  }
+}
