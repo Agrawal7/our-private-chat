@@ -22,39 +22,39 @@ const Chat = ({
   const messagesEndRef = useRef(null);
   const messagesContainerRef = useRef(null);
   const voiceCallRef = useRef(null);
+  const isUserScrolledUpRef = useRef(false);
 
   // Check if user is at bottom
   const checkIfAtBottom = () => {
     if (!messagesContainerRef.current) return true;
     const { scrollTop, scrollHeight, clientHeight } = messagesContainerRef.current;
-    const atBottom = scrollHeight - scrollTop - clientHeight < 50;
-    setShowScrollButton(!atBottom);
+    const atBottom = scrollHeight - scrollTop - clientHeight < 100;
     return atBottom;
   };
 
-  // Scroll to bottom
+  // Scroll to bottom instantly
   const scrollToBottom = () => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
       setShowScrollButton(false);
+      isUserScrolledUpRef.current = false;
     }
   };
 
   // Handle scroll event
   const handleScroll = () => {
     if (!messagesContainerRef.current) return;
-    const { scrollTop, scrollHeight, clientHeight } = messagesContainerRef.current;
-    const atBottom = scrollHeight - scrollTop - clientHeight < 50;
-    setShowScrollButton(!atBottom);
+    const atBottom = checkIfAtBottom();
+    isUserScrolledUpRef.current = !atBottom;
+    setShowScrollButton(!atBottom && chat.length > 0);
   };
 
-  // Auto scroll only when new message arrives and user is at bottom
+  // Auto-scroll when new messages arrive
   useEffect(() => {
-    if (messagesContainerRef.current) {
-      const atBottom = checkIfAtBottom();
-      if (atBottom) {
-        scrollToBottom();
-      }
+    if (!isUserScrolledUpRef.current) {
+      scrollToBottom();
+    } else {
+      setShowScrollButton(true);
     }
   }, [chat]);
 
@@ -67,7 +67,7 @@ const Chat = ({
     }
   }, []);
 
-  // Initial scroll to bottom
+  // Initial scroll to bottom when chat loads
   useEffect(() => {
     setTimeout(() => {
       scrollToBottom();
