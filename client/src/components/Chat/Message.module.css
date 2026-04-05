@@ -12,37 +12,11 @@
   margin-left: auto;
 }
 
-/* Other messages (left side - gray) - Make draggable */
+/* Other messages (left side - gray) */
 .other {
   float: left;
   margin-right: auto;
   position: relative;
-  cursor: grab;
-  transition: all 0.2s ease;
-}
-
-.other:active {
-  cursor: grabbing;
-}
-
-/* Draggable message indicator */
-.message[draggable="true"] {
-  cursor: grab;
-  transition: transform 0.2s ease, opacity 0.2s ease;
-}
-
-.message[draggable="true"]:active {
-  cursor: grabbing;
-}
-
-.message[draggable="true"]:hover {
-  opacity: 0.9;
-  transform: translateX(4px);
-}
-
-/* Dragging state */
-.message.dragging {
-  opacity: 0.4;
 }
 
 /* Message content */
@@ -127,76 +101,6 @@
   font-size: 12px;
 }
 
-/* ========== DRAG TO REPLY STYLES ========== */
-
-/* Drag hint icon - appears on hover */
-.dragHintIcon {
-  position: absolute;
-  right: -80px;
-  top: 50%;
-  transform: translateY(-50%);
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  padding: 6px 12px;
-  border-radius: 20px;
-  font-size: 11px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  white-space: nowrap;
-  animation: slideInRight 0.3s ease;
-  z-index: 10;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
-  cursor: grab;
-}
-
-/* Dragging indicator (floating) */
-.draggingIndicator {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: #10b981;
-  color: white;
-  padding: 12px 20px;
-  border-radius: 40px;
-  font-size: 14px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  white-space: nowrap;
-  animation: pulse 0.5s ease infinite;
-  z-index: 9999;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-  font-weight: 500;
-}
-
-/* Reply indicator while dragging (alternative) */
-.replyIndicator {
-  position: fixed;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  padding: 8px 16px;
-  border-radius: 40px;
-  font-size: 12px;
-  pointer-events: none;
-  z-index: 9999;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-  animation: bounce 0.3s ease;
-  white-space: nowrap;
-  transform: translate(-50%, -50%);
-}
-
-/* Drag arrow and text */
-.dragArrow, .draggingIcon {
-  font-size: 16px;
-}
-
-.dragText, .draggingText {
-  font-size: 12px;
-  font-weight: 500;
-}
-
 /* Reply preview in message (shows quoted message) */
 .replyPreview {
   background: rgba(0, 0, 0, 0.05);
@@ -241,30 +145,7 @@
   color: rgba(255, 255, 255, 0.7);
 }
 
-/* Drag hint tooltip (bottom of message) */
-.dragHint {
-  position: absolute;
-  bottom: -20px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: rgba(0, 0, 0, 0.7);
-  color: white;
-  padding: 2px 8px;
-  border-radius: 12px;
-  font-size: 10px;
-  white-space: nowrap;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  pointer-events: none;
-}
-
-.message:hover .dragHint {
-  opacity: 1;
-}
-
-/* ========== ANIMATIONS ========== */
-
-/* Fade in animation */
+/* Animations */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -276,44 +157,7 @@
   }
 }
 
-/* Slide in right animation for drag hint */
-@keyframes slideInRight {
-  from {
-    opacity: 0;
-    transform: translateY(-50%) translateX(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(-50%) translateX(0);
-  }
-}
-
-/* Bounce animation for reply indicator */
-@keyframes bounce {
-  0% {
-    transform: translate(-50%, -50%) scale(0.8);
-    opacity: 0;
-  }
-  100% {
-    transform: translate(-50%, -50%) scale(1);
-    opacity: 1;
-  }
-}
-
-/* Pulse animation for dragging indicator */
-@keyframes pulse {
-  0%, 100% {
-    transform: translate(-50%, -50%) scale(1);
-    opacity: 1;
-  }
-  50% {
-    transform: translate(-50%, -50%) scale(1.05);
-    opacity: 0.9;
-  }
-}
-
-/* ========== RESPONSIVE STYLES ========== */
-
+/* Responsive */
 @media (max-width: 768px) {
   .message {
     max-width: 85%;
@@ -330,33 +174,6 @@
   
   .time {
     font-size: 9px;
-  }
-  
-  /* Mobile drag hint adjustments */
-  .dragHintIcon {
-    right: -70px;
-    padding: 4px 10px;
-    font-size: 10px;
-  }
-  
-  .dragText, .draggingText {
-    font-size: 10px;
-  }
-  
-  .draggingIndicator {
-    padding: 10px 16px;
-    font-size: 12px;
-    white-space: normal;
-    max-width: 90%;
-    text-align: center;
-  }
-  
-  .replyIndicator {
-    font-size: 10px;
-    padding: 6px 12px;
-    white-space: normal;
-    max-width: 200px;
-    text-align: center;
   }
   
   .replyPreview {
