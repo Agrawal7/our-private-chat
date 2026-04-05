@@ -18,7 +18,7 @@ const Chat = ({
   const [isCallActive, setIsCallActive] = useState(false);
   const [incomingCall, setIncomingCall] = useState(null);
   const [showScrollButton, setShowScrollButton] = useState(false);
-  const [replyToMessage, setReplyToMessage] = useState(null); // New state for reply
+  const [replyToMessage, setReplyToMessage] = useState(null);
   
   const messagesEndRef = useRef(null);
   const messagesContainerRef = useRef(null);
@@ -75,14 +75,32 @@ const Chat = ({
     }, 100);
   }, []);
 
-  // Handle reply from message drag
+  // Handle reply from message drag - ONLY ONE VERSION
   const handleReply = (message) => {
+    console.log('📝 handleReply called with:', message);
     setReplyToMessage(message);
+    
     // Focus on message input
     const messageInput = document.querySelector('input[type="text"]');
     if (messageInput) {
       messageInput.focus();
     }
+    
+    // Show a temporary notification
+    const notification = document.createElement('div');
+    notification.className = styles.replyNotification;
+    notification.innerHTML = `
+      <div class="${styles.replyNotificationContent}">
+        <span>↩️ Replying to ${message.author || message.displayName}</span>
+        <span style="font-size: 11px; opacity: 0.8;">"${message.message.substring(0, 40)}${message.message.length > 40 ? '...' : ''}"</span>
+      </div>
+    `;
+    document.body.appendChild(notification);
+    setTimeout(() => {
+      if (notification.parentNode) {
+        notification.remove();
+      }
+    }, 2000);
   };
 
   // Cancel reply
@@ -177,7 +195,8 @@ const Chat = ({
       author: name,
       message: msg,
       senderId: currentUserId,
-      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      id: Date.now()
     };
     
     // Add reply data if replying to a message
@@ -185,8 +204,10 @@ const Chat = ({
       messageData.replyTo = {
         id: replyToMessage.id || Date.now(),
         author: replyToMessage.author || replyToMessage.displayName,
-        message: replyToMessage.message
+        message: replyToMessage.message,
+        timestamp: replyToMessage.timestamp
       };
+      console.log('Sending reply to:', replyToMessage.author);
       setReplyToMessage(null);
     }
     
