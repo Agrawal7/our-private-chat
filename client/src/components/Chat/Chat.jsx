@@ -18,7 +18,6 @@ const Chat = ({
   const [isCallActive, setIsCallActive] = useState(false);
   const [incomingCall, setIncomingCall] = useState(null);
   const [showScrollButton, setShowScrollButton] = useState(false);
-  const [replyToMessage, setReplyToMessage] = useState(null);
   
   const messagesEndRef = useRef(null);
   const messagesContainerRef = useRef(null);
@@ -74,47 +73,6 @@ const Chat = ({
       scrollToBottom();
     }, 100);
   }, []);
-
-  // Handle reply from message drag
-  const handleReply = (message) => {
-    console.log('Setting reply to message:', message);
-    setReplyToMessage(message);
-    
-    // Focus on message input
-    const messageInput = document.querySelector('input[type="text"]');
-    if (messageInput) {
-      messageInput.focus();
-    }
-    
-    // Show notification
-    const replyNotification = document.createElement('div');
-    replyNotification.className = styles.replyNotification;
-    replyNotification.innerHTML = `
-      <div class="${styles.replyNotificationContent}">
-        <span>↩️ Replying to: ${message.author || message.displayName}</span>
-        <span class="${styles.replyPreviewText}">"${message.message.substring(0, 40)}${message.message.length > 40 ? '...' : ''}"</span>
-      </div>
-    `;
-    
-    // Add to DOM and remove after 3 seconds
-    const container = messagesContainerRef.current;
-    if (container) {
-      const existingNotif = document.querySelector(`.${styles.replyNotification}`);
-      if (existingNotif) existingNotif.remove();
-      
-      container.appendChild(replyNotification);
-      setTimeout(() => {
-        if (replyNotification.parentNode) {
-          replyNotification.remove();
-        }
-      }, 3000);
-    }
-  };
-
-  // Cancel reply
-  const cancelReply = () => {
-    setReplyToMessage(null);
-  };
 
   // Listen for incoming calls
   useEffect(() => {
@@ -196,7 +154,7 @@ const Chat = ({
     return 'partner';
   };
 
-  // Handle sending message with reply
+  // Handle sending message
   const handleSendMessage = (msg) => {
     const messageData = {
       room,
@@ -204,20 +162,8 @@ const Chat = ({
       message: msg,
       senderId: currentUserId,
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      id: Date.now() // Add unique ID
+      id: Date.now()
     };
-    
-    // Add reply data if replying to a message
-    if (replyToMessage) {
-      messageData.replyTo = {
-        id: replyToMessage.id || Date.now(),
-        author: replyToMessage.author || replyToMessage.displayName,
-        message: replyToMessage.message,
-        timestamp: replyToMessage.timestamp
-      };
-      console.log('Sending reply to:', replyToMessage.author);
-      setReplyToMessage(null); // Clear after sending
-    }
     
     socket.emit('send_message', messageData);
   };
@@ -247,21 +193,6 @@ const Chat = ({
         </div>
       </div>
 
-      {/* Reply Preview Bar - Shows when replying to a message */}
-      {replyToMessage && (
-        <div className={styles.replyPreviewBar}>
-          <div className={styles.replyPreviewContent}>
-            <span className={styles.replyPreviewText}>
-              ↩️ Replying to <strong>{replyToMessage.author || replyToMessage.displayName}</strong>: 
-              "{replyToMessage.message.substring(0, 50)}{replyToMessage.message.length > 50 ? '...' : ''}"
-            </span>
-            <button onClick={cancelReply} className={styles.cancelReplyBtn}>
-              ✖️ Cancel
-            </button>
-          </div>
-        </div>
-      )}
-
       {incomingCall && (
         <div className={styles.incomingCall}>
           <div className={styles.incomingCallContent}>
@@ -281,7 +212,6 @@ const Chat = ({
             <div className={styles.welcomeMessage}>
               <div className={styles.welcomeIcon}>🐦</div>
               <p>Connected! Start chatting with {getOtherUserName()}.</p>
-              <small className={styles.dragHint}>💡 Tip: Drag any message to the right to reply!</small>
             </div>
           ) : (
             <>
@@ -291,7 +221,6 @@ const Chat = ({
                   message={msg} 
                   isOwn={msg.senderId === currentUserId}
                   currentUserId={currentUserId}
-                  onReply={handleReply}
                 />
               ))}
               <div ref={messagesEndRef} />

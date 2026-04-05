@@ -1,4 +1,3 @@
-/* Message container */
 .message {
   margin-bottom: 16px;
   animation: fadeIn 0.3s ease;
@@ -6,20 +5,16 @@
   clear: both;
 }
 
-/* Own messages (right side - purple gradient) */
 .own {
   float: right;
   margin-left: auto;
 }
 
-/* Other messages (left side - gray) */
 .other {
   float: left;
   margin-right: auto;
-  position: relative;
 }
 
-/* Message content */
 .content {
   padding: 12px 16px;
   border-radius: 18px;
@@ -29,7 +24,6 @@
   position: relative;
 }
 
-/* Own message styling - Purple gradient with white text */
 .own .content {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
@@ -37,7 +31,6 @@
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-/* Other message styling - Light gray with dark text */
 .other .content {
   background: #f0f0f0;
   color: #1f2937;
@@ -45,7 +38,6 @@
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
 }
 
-/* Author name for other messages */
 .author {
   font-size: 12px;
   font-weight: 600;
@@ -61,7 +53,6 @@
   font-size: 12px;
 }
 
-/* Timestamp */
 .time {
   font-size: 10px;
   color: #9ca3af;
@@ -78,7 +69,6 @@
   text-align: left;
 }
 
-/* System messages (like join/leave notifications) */
 .systemMessage {
   text-align: center;
   margin: 16px 0;
@@ -101,51 +91,6 @@
   font-size: 12px;
 }
 
-/* Reply preview in message (shows quoted message) */
-.replyPreview {
-  background: rgba(0, 0, 0, 0.05);
-  border-left: 3px solid #667eea;
-  border-radius: 12px;
-  padding: 8px 12px;
-  margin-bottom: 8px;
-  font-size: 12px;
-}
-
-.own .replyPreview {
-  background: rgba(255, 255, 255, 0.15);
-  border-left-color: white;
-}
-
-.replyHeader {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 11px;
-  color: #667eea;
-  margin-bottom: 4px;
-  font-weight: 600;
-}
-
-.own .replyHeader {
-  color: rgba(255, 255, 255, 0.8);
-}
-
-.replyIcon {
-  font-size: 12px;
-}
-
-.replyContent {
-  font-size: 11px;
-  color: #6b7280;
-  font-style: italic;
-  word-wrap: break-word;
-}
-
-.own .replyContent {
-  color: rgba(255, 255, 255, 0.7);
-}
-
-/* Animations */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -157,7 +102,6 @@
   }
 }
 
-/* Responsive */
 @media (max-width: 768px) {
   .message {
     max-width: 85%;
@@ -174,9 +118,5 @@
   
   .time {
     font-size: 9px;
-  }
-  
-  .replyPreview {
-    max-width: 100%;
   }
 }
