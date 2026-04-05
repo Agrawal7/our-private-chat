@@ -12,10 +12,37 @@
   margin-left: auto;
 }
 
-/* Other messages (left side - gray) */
+/* Other messages (left side - gray) - Make draggable */
 .other {
   float: left;
   margin-right: auto;
+  position: relative;
+  cursor: grab;
+  transition: all 0.2s ease;
+}
+
+.other:active {
+  cursor: grabbing;
+}
+
+/* Draggable message indicator */
+.message[draggable="true"] {
+  cursor: grab;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.message[draggable="true"]:active {
+  cursor: grabbing;
+}
+
+.message[draggable="true"]:hover {
+  opacity: 0.9;
+  transform: translateX(4px);
+}
+
+/* Dragging state */
+.message.dragging {
+  opacity: 0.4;
 }
 
 /* Message content */
@@ -100,56 +127,51 @@
   font-size: 12px;
 }
 
-/* Animations */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
+/* ========== DRAG TO REPLY STYLES ========== */
 
-/* Responsive */
-@media (max-width: 768px) {
-  .message {
-    max-width: 85%;
-  }
-  
-  .content {
-    padding: 10px 14px;
-    font-size: 13px;
-  }
-  
-  .author {
-    font-size: 11px;
-  }
-  
-  .time {
-    font-size: 9px;
-  }
-}
-
-/* Add these styles to your existing Message.module.css */
-
-/* Draggable message indicator */
-.message[draggable="true"] {
+/* Drag hint icon - appears on hover */
+.dragHintIcon {
+  position: absolute;
+  right: -80px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  animation: slideInRight 0.3s ease;
+  z-index: 10;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
   cursor: grab;
-  transition: transform 0.2s ease, opacity 0.2s ease;
 }
 
-.message[draggable="true"]:active {
-  cursor: grabbing;
+/* Dragging indicator (floating) */
+.draggingIndicator {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #10b981;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 40px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  white-space: nowrap;
+  animation: pulse 0.5s ease infinite;
+  z-index: 9999;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  font-weight: 500;
 }
 
-.message[draggable="true"]:hover {
-  opacity: 0.9;
-  transform: translateX(4px);
-}
-
-/* Reply indicator while dragging */
+/* Reply indicator while dragging (alternative) */
 .replyIndicator {
   position: fixed;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -165,18 +187,17 @@
   transform: translate(-50%, -50%);
 }
 
-@keyframes bounce {
-  0% {
-    transform: translate(-50%, -50%) scale(0.8);
-    opacity: 0;
-  }
-  100% {
-    transform: translate(-50%, -50%) scale(1);
-    opacity: 1;
-  }
+/* Drag arrow and text */
+.dragArrow, .draggingIcon {
+  font-size: 16px;
 }
 
-/* Reply preview in message */
+.dragText, .draggingText {
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* Reply preview in message (shows quoted message) */
 .replyPreview {
   background: rgba(0, 0, 0, 0.05);
   border-left: 3px solid #667eea;
@@ -220,7 +241,7 @@
   color: rgba(255, 255, 255, 0.7);
 }
 
-/* Drag hint tooltip */
+/* Drag hint tooltip (bottom of message) */
 .dragHint {
   position: absolute;
   bottom: -20px;
@@ -241,8 +262,95 @@
   opacity: 1;
 }
 
-/* Responsive */
+/* ========== ANIMATIONS ========== */
+
+/* Fade in animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Slide in right animation for drag hint */
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateY(-50%) translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(-50%) translateX(0);
+  }
+}
+
+/* Bounce animation for reply indicator */
+@keyframes bounce {
+  0% {
+    transform: translate(-50%, -50%) scale(0.8);
+    opacity: 0;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+}
+
+/* Pulse animation for dragging indicator */
+@keyframes pulse {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.05);
+    opacity: 0.9;
+  }
+}
+
+/* ========== RESPONSIVE STYLES ========== */
+
 @media (max-width: 768px) {
+  .message {
+    max-width: 85%;
+  }
+  
+  .content {
+    padding: 10px 14px;
+    font-size: 13px;
+  }
+  
+  .author {
+    font-size: 11px;
+  }
+  
+  .time {
+    font-size: 9px;
+  }
+  
+  /* Mobile drag hint adjustments */
+  .dragHintIcon {
+    right: -70px;
+    padding: 4px 10px;
+    font-size: 10px;
+  }
+  
+  .dragText, .draggingText {
+    font-size: 10px;
+  }
+  
+  .draggingIndicator {
+    padding: 10px 16px;
+    font-size: 12px;
+    white-space: normal;
+    max-width: 90%;
+    text-align: center;
+  }
+  
   .replyIndicator {
     font-size: 10px;
     padding: 6px 12px;
@@ -253,5 +361,118 @@
   
   .replyPreview {
     max-width: 100%;
+  }
+}
+
+/* Make non-own messages draggable */
+.other {
+  position: relative;
+  transition: all 0.2s ease;
+  cursor: grab;
+}
+
+.other:active {
+  cursor: grabbing;
+}
+
+/* Drag hint icon */
+.dragHintIcon {
+  position: absolute;
+  right: -85px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  animation: slideInRight 0.3s ease;
+  z-index: 10;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+  pointer-events: none;
+}
+
+/* Dragging indicator */
+.draggingIndicator {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  padding: 12px 20px;
+  border-radius: 40px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  z-index: 9999;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+  font-weight: 500;
+  white-space: nowrap;
+  animation: fadeInScale 0.2s ease;
+}
+
+.draggingIcon {
+  font-size: 18px;
+}
+
+.draggingText {
+  font-size: 13px;
+}
+
+.dragArrow, .dragText {
+  font-size: 11px;
+}
+
+/* Animations */
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateY(-50%) translateX(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(-50%) translateX(0);
+  }
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .dragHintIcon {
+    right: -70px;
+    padding: 4px 8px;
+    font-size: 9px;
+  }
+  
+  .dragText {
+    font-size: 9px;
+  }
+  
+  .draggingIndicator {
+    padding: 8px 16px;
+    font-size: 12px;
+    white-space: normal;
+    max-width: 80%;
+    text-align: center;
+  }
+  
+  .draggingText {
+    font-size: 11px;
   }
 }
