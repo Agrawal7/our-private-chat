@@ -1,3 +1,4 @@
+/* Message container */
 .message {
   margin-bottom: 16px;
   animation: fadeIn 0.3s ease;
@@ -5,16 +6,19 @@
   clear: both;
 }
 
+/* Own messages (right side - purple gradient) */
 .own {
   float: right;
   margin-left: auto;
 }
 
+/* Other messages (left side - gray) */
 .other {
   float: left;
   margin-right: auto;
 }
 
+/* Message content */
 .content {
   padding: 12px 16px;
   border-radius: 18px;
@@ -24,6 +28,7 @@
   position: relative;
 }
 
+/* Own message styling - Purple gradient with white text */
 .own .content {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
@@ -31,6 +36,7 @@
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
+/* Other message styling - Light gray with dark text */
 .other .content {
   background: #f0f0f0;
   color: #1f2937;
@@ -38,6 +44,7 @@
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
 }
 
+/* Author name for other messages */
 .author {
   font-size: 12px;
   font-weight: 600;
@@ -53,6 +60,7 @@
   font-size: 12px;
 }
 
+/* Timestamp */
 .time {
   font-size: 10px;
   color: #9ca3af;
@@ -69,6 +77,7 @@
   text-align: left;
 }
 
+/* System messages */
 .systemMessage {
   text-align: center;
   margin: 16px 0;
@@ -91,6 +100,7 @@
   font-size: 12px;
 }
 
+/* Animations */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -102,6 +112,7 @@
   }
 }
 
+/* Responsive */
 @media (max-width: 768px) {
   .message {
     max-width: 85%;

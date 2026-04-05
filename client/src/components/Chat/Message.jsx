@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './Message.module.css';
 
-const Message = ({ message, isOwn, currentUserId }) => {
+const Message = ({ message, isOwn }) => {
   if (message.isSystem) {
     return (
       <div className={styles.systemMessage}>
@@ -18,14 +18,12 @@ const Message = ({ message, isOwn, currentUserId }) => {
       {!isOwn && (
         <div className={styles.author}>
           <span className={styles.authorIcon}>👤</span>
-          {message.displayName || message.author}
+          {message.author}
         </div>
       )}
-      
       <div className={styles.content}>
         {message.message}
       </div>
-      
       <div className={styles.time}>{message.time}</div>
     </div>
   );

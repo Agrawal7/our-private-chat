@@ -161,8 +161,7 @@ const Chat = ({
       author: name,
       message: msg,
       senderId: currentUserId,
-      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      id: Date.now()
+      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     };
     
     socket.emit('send_message', messageData);
@@ -220,7 +219,6 @@ const Chat = ({
                   key={idx} 
                   message={msg} 
                   isOwn={msg.senderId === currentUserId}
-                  currentUserId={currentUserId}
                 />
               ))}
               <div ref={messagesEndRef} />
