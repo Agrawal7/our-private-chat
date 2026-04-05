@@ -1,83 +1,95 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import styles from './Message.module.css';
 
 const Message = ({ message, isOwn, currentUserId, onReply }) => {
   const [isDragging, setIsDragging] = useState(false);
-  const [startPos, setStartPos] = useState({ x: 0, y: 0 });
-  const messageRef = useRef(null);
+  const [showDragHint, setShowDragHint] = useState(false);
+  const dragStartRef = useRef(null);
+  const dragTimeoutRef = useRef(null);
 
-  // Handle mouse down (start drag)
-  const handleMouseDown = (e) => {
-    if (!isOwn && e.button === 0) { // Left click only
-      setStartPos({ x: e.clientX, y: e.clientY });
-      setIsDragging(true);
-      document.body.style.userSelect = 'none';
-      e.preventDefault();
-    }
-  };
-
-  // Handle mouse move (while dragging)
-  const handleMouseMove = (e) => {
-    if (isDragging && !isOwn) {
-      const deltaX = Math.abs(e.clientX - startPos.x);
-      const deltaY = Math.abs(e.clientY - startPos.y);
-      
-      // Visual feedback when dragged enough
-      if (deltaX > 30 || deltaY > 10) {
-        if (messageRef.current) {
-          messageRef.current.style.opacity = '0.6';
-          messageRef.current.style.transform = `translateX(${e.clientX - startPos.x}px)`;
-        }
-      }
-    }
-  };
-
-  // Handle mouse up (end drag - trigger reply)
-  const handleMouseUp = (e) => {
-    if (isDragging && !isOwn) {
-      const deltaX = Math.abs(e.clientX - startPos.x);
-      const deltaY = Math.abs(e.clientY - startPos.y);
-      
-      console.log('Mouse up - Delta X:', deltaX, 'Delta Y:', deltaY);
-      
-      // If dragged more than 50px horizontally, trigger reply
-      if (deltaX > 50) {
-        console.log('✅ REPLY TRIGGERED!');
-        const messageData = {
-          id: message.id || Date.now(),
-          author: message.author || message.displayName,
-          message: message.message,
-          time: message.time
-        };
-        if (onReply) {
-          onReply(messageData);
-        }
-      } else {
-        console.log('❌ Not enough drag distance:', deltaX);
-      }
-      
-      // Reset styles
-      if (messageRef.current) {
-        messageRef.current.style.opacity = '';
-        messageRef.current.style.transform = '';
-      }
-      setIsDragging(false);
-      document.body.style.userSelect = '';
-    }
-  };
-
-  // Clean up event listeners
-  useEffect(() => {
-    if (isDragging) {
-      window.addEventListener('mousemove', handleMouseMove);
-      window.addEventListener('mouseup', handleMouseUp);
-      return () => {
-        window.removeEventListener('mousemove', handleMouseMove);
-        window.removeEventListener('mouseup', handleMouseUp);
+  // Handle drag start
+  const handleDragStart = (e) => {
+    if (!isOwn) {
+      // Store message data for drag
+      const dragData = {
+        id: message.id || Date.now(),
+        author: message.author || message.displayName,
+        message: message.message,
+        time: message.time,
+        displayName: message.displayName
       };
+      
+      // Set drag data
+      e.dataTransfer.setData('text/plain', JSON.stringify(dragData));
+      e.dataTransfer.effectAllowed = 'copy';
+      
+      // Store start position
+      dragStartRef.current = {
+        x: e.clientX,
+        y: e.clientY,
+        message: dragData
+      };
+      
+      setIsDragging(true);
+      
+      // Clear any existing timeout
+      if (dragTimeoutRef.current) {
+        clearTimeout(dragTimeoutRef.current);
+      }
     }
-  }, [isDragging, startPos]);
+  };
 
+  // Handle drag end - this is where the reply is triggered
+  const handleDragEnd = (e) => {
+    if (!isOwn && dragStartRef.current) {
+      const dragEndX = e.clientX;
+      const dragEndY = e.clientY;
+      
+      // Calculate drag distance
+      const dragDistance = Math.sqrt(
+        Math.pow(dragEndX - dragStartRef.current.x, 2) + 
+        Math.pow(dragEndY - dragStartRef.current.y, 2)
+      );
+      
+      // If dragged more than 30px, trigger reply
+      if (dragDistance > 30 && dragStartRef.current.message) {
+        console.log('✓ Message dragged, triggering reply:', dragStartRef.current.message);
+        
+        // Call the reply function
+        if (onReply) {
+          onReply(dragStartRef.current.message);
+        }
+      }
+      
+      setIsDragging(false);
+      
+      // Reset after timeout
+      dragTimeoutRef.current = setTimeout(() => {
+        dragStartRef.current = null;
+      }, 500);
+    }
+  };
+
+  // Handle drag over
+  const handleDragOver = (e) => {
+    if (!isOwn) {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'copy';
+    }
+  };
+
+  // Show hint on hover
+  const handleMouseEnter = () => {
+    if (!isOwn && !isDragging) {
+      setShowDragHint(true);
+    }
+  };
+
+  const handleMouseLeave = () => {
+    setShowDragHint(false);
+  };
+
+  // System message
   if (message.isSystem) {
     return (
       <div className={styles.systemMessage}>
@@ -91,17 +103,16 @@ const Message = ({ message, isOwn, currentUserId, onReply }) => {
 
   return (
     <div 
-      ref={messageRef}
-      className={`${styles.message} ${isOwn ? styles.own : styles.other}`}
-      onMouseDown={handleMouseDown}
-      style={{ 
-        cursor: !isOwn ? 'grab' : 'default',
-        transition: 'transform 0.05s linear',
-        userSelect: isDragging ? 'none' : 'auto'
-      }}
+      className={`${styles.message} ${isOwn ? styles.own : styles.other} ${isDragging ? styles.dragging : ''}`}
+      draggable={!isOwn}
+      onDragStart={handleDragStart}
+      onDragEnd={handleDragEnd}
+      onDragOver={handleDragOver}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
     >
-      {/* Drag hint - shows on hover */}
-      {!isOwn && !isDragging && (
+      {/* Drag hint - appears on hover */}
+      {!isOwn && showDragHint && !isDragging && (
         <div className={styles.dragHintIcon}>
           <span className={styles.dragArrow}>↩️</span>
           <span className={styles.dragText}>Drag to reply</span>
@@ -111,10 +122,8 @@ const Message = ({ message, isOwn, currentUserId, onReply }) => {
       {/* Dragging indicator */}
       {!isOwn && isDragging && (
         <div className={styles.draggingIndicator}>
-          <span className={styles.draggingIcon}>↩️</span>
-          <span className={styles.draggingText}>
-            Release to reply
-          </span>
+          <span className={styles.draggingIcon}>📋</span>
+          <span className={styles.draggingText}>Release to reply to "{message.message.substring(0, 30)}..."</span>
         </div>
       )}
       

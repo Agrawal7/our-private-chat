@@ -75,9 +75,9 @@ const Chat = ({
     }, 100);
   }, []);
 
-  // Handle reply from message drag - ONLY ONE VERSION
+  // Handle reply from message drag
   const handleReply = (message) => {
-    console.log('📝 handleReply called with:', message);
+    console.log('Setting reply to message:', message);
     setReplyToMessage(message);
     
     // Focus on message input
@@ -86,21 +86,29 @@ const Chat = ({
       messageInput.focus();
     }
     
-    // Show a temporary notification
-    const notification = document.createElement('div');
-    notification.className = styles.replyNotification;
-    notification.innerHTML = `
+    // Show notification
+    const replyNotification = document.createElement('div');
+    replyNotification.className = styles.replyNotification;
+    replyNotification.innerHTML = `
       <div class="${styles.replyNotificationContent}">
-        <span>↩️ Replying to ${message.author || message.displayName}</span>
-        <span style="font-size: 11px; opacity: 0.8;">"${message.message.substring(0, 40)}${message.message.length > 40 ? '...' : ''}"</span>
+        <span>↩️ Replying to: ${message.author || message.displayName}</span>
+        <span class="${styles.replyPreviewText}">"${message.message.substring(0, 40)}${message.message.length > 40 ? '...' : ''}"</span>
       </div>
     `;
-    document.body.appendChild(notification);
-    setTimeout(() => {
-      if (notification.parentNode) {
-        notification.remove();
-      }
-    }, 2000);
+    
+    // Add to DOM and remove after 3 seconds
+    const container = messagesContainerRef.current;
+    if (container) {
+      const existingNotif = document.querySelector(`.${styles.replyNotification}`);
+      if (existingNotif) existingNotif.remove();
+      
+      container.appendChild(replyNotification);
+      setTimeout(() => {
+        if (replyNotification.parentNode) {
+          replyNotification.remove();
+        }
+      }, 3000);
+    }
   };
 
   // Cancel reply
@@ -196,7 +204,7 @@ const Chat = ({
       message: msg,
       senderId: currentUserId,
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      id: Date.now()
+      id: Date.now() // Add unique ID
     };
     
     // Add reply data if replying to a message
@@ -208,7 +216,7 @@ const Chat = ({
         timestamp: replyToMessage.timestamp
       };
       console.log('Sending reply to:', replyToMessage.author);
-      setReplyToMessage(null);
+      setReplyToMessage(null); // Clear after sending
     }
     
     socket.emit('send_message', messageData);
