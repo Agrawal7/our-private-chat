@@ -30,3 +30,4 @@ const Message = ({ message, isOwn }) => {
 };
 
 export default Message;
+
