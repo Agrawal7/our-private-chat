@@ -155,11 +155,17 @@ io.on('connection', (socket) => {
       const messageData = {
         ...data,
         senderId: socket.id,
-        timestamp: Date.now()
+        timestamp: Date.now(),
+        status: 'sent' // Initialize status
       };
       io.to(data.room).emit('receive_message', messageData);
       console.log(`💬 Message in ${data.room} from ${data.author} (${socket.id})`);
     }
+  });
+
+  // Message status (read receipts)
+  socket.on('update_message_status', ({ room, messageId, status }) => {
+    socket.to(room).emit('message_status_updated', { messageId, status });
   });
 
   // Typing indicator with user ID

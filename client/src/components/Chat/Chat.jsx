@@ -3,6 +3,7 @@ import styles from './Chat.module.css';
 import Message from './Message';
 import MessageInput from './MessageInput';
 import VoiceCall from '../VoiceCall/VoiceCall';
+import { analyzeSentiment } from '../../utils/sentiment';
 
 const Chat = ({ 
   chat, 
@@ -18,11 +19,38 @@ const Chat = ({
   const [isCallActive, setIsCallActive] = useState(false);
   const [incomingCall, setIncomingCall] = useState(null);
   const [showScrollButton, setShowScrollButton] = useState(false);
+  const [moodScore, setMoodScore] = useState(0);
   
   const messagesEndRef = useRef(null);
   const messagesContainerRef = useRef(null);
   const voiceCallRef = useRef(null);
   const isUserScrolledUpRef = useRef(false);
+
+  // Analyze sentiment on new messages
+  useEffect(() => {
+    const recentMessages = chat.slice(-10);
+    let score = 0;
+    recentMessages.forEach(msg => {
+      score += analyzeSentiment(msg.message);
+    });
+    setMoodScore(Math.max(-5, Math.min(5, score)));
+  }, [chat]);
+
+  // Calculate dynamic style based on moodScore
+  const getDynamicStyle = () => {
+    if (moodScore >= 2) {
+      return {
+        background: 'linear-gradient(135deg, rgba(236, 72, 153, 0.15) 0%, rgba(245, 158, 11, 0.15) 100%)',
+        boxShadow: '0 25px 50px -12px rgba(236, 72, 153, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.2)'
+      };
+    } else if (moodScore <= -2) {
+      return {
+        background: 'linear-gradient(135deg, rgba(220, 38, 38, 0.15) 0%, rgba(76, 29, 149, 0.15) 100%)',
+        boxShadow: '0 25px 50px -12px rgba(220, 38, 38, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1)'
+      };
+    }
+    return {};
+  };
 
   // Check if user is at bottom
   const checkIfAtBottom = () => {
@@ -49,13 +77,9 @@ const Chat = ({
     setShowScrollButton(!atBottom && chat.length > 0);
   };
 
-  // Auto-scroll when new messages arrive
+  // Auto-scroll when new messages arrive (sent or received)
   useEffect(() => {
-    if (!isUserScrolledUpRef.current) {
-      scrollToBottom();
-    } else {
-      setShowScrollButton(true);
-    }
+    scrollToBottom();
   }, [chat]);
 
   // Add scroll event listener
@@ -157,18 +181,20 @@ const Chat = ({
   // Handle sending message
   const handleSendMessage = (msg) => {
     const messageData = {
+      id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
       room,
       author: name,
       message: msg,
       senderId: currentUserId,
-      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      status: 'sent'
     };
     
     socket.emit('send_message', messageData);
   };
 
   return (
-    <div className={styles.container}>
+    <div className={styles.container} style={getDynamicStyle()}>
       <div className={styles.header}>
         <div className={styles.headerLeft}>
           <div className={styles.roomInfo}>
@@ -221,7 +247,7 @@ const Chat = ({
                   isOwn={msg.senderId === currentUserId}
                 />
               ))}
-              <div ref={messagesEndRef} />
+              <div ref={messagesEndRef} style={{ clear: 'both' }} />
             </>
           )}
         </div>

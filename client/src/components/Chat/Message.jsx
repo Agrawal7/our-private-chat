@@ -24,7 +24,20 @@ const Message = ({ message, isOwn }) => {
       <div className={styles.content}>
         {message.message}
       </div>
-      <div className={styles.time}>{message.time}</div>
+      <div className={styles.timeWrapper}>
+        <span className={styles.time}>{message.time}</span>
+        {isOwn && (
+          <span className={styles.status}>
+            {message.status === 'read' ? (
+              <span className={styles.blueTick}>✓✓</span>
+            ) : message.status === 'delivered' ? (
+              <span className={styles.greyTick}>✓✓</span>
+            ) : (
+              <span className={styles.greyTick}>✓</span>
+            )}
+          </span>
+        )}
+      </div>
     </div>
   );
 };

@@ -41,45 +41,62 @@ function App() {
   }, []);
 
   useEffect(() => {
-    socket.on('connect', () => {
+    const onConnect = () => {
       console.log('Connected to server');
       setIsConnected(true);
-    });
+    };
 
-    // Receive user info after joining/creating room
-    socket.on('user_info', (data) => {
+    const onUserInfo = (data) => {
       console.log('User info received:', data);
       setCurrentUserId(data.userId);
-    });
+    };
 
-    // Receive message with sender ID
-    socket.on('receive_message', (data) => {
+    const onReceiveMessage = (data) => {
       setChat((prev) => [...prev, data]);
-    });
+      // If we are receiving someone else's message, mark it as read
+      if (data.senderId !== currentUserId) {
+        socket.emit('update_message_status', { room: data.room, messageId: data.id, status: 'read' });
+      }
+    };
 
-    // Update room users list
-    socket.on('room_users', ({ count, users }) => {
+    const onMessageStatusUpdated = ({ messageId, status }) => {
+      setChat((prev) => 
+        prev.map(msg => 
+          msg.id === messageId ? { ...msg, status } : msg
+        )
+      );
+    };
+
+    const onRoomUsers = ({ count, users }) => {
       setOnlineUsers(count);
       setUsersList(users);
       // Find the other user (not the current one)
       const other = users.find(u => u.id !== currentUserId);
       setOtherUser(other);
-    });
+    };
 
-    socket.on('user_typing', ({ author, userId }) => {
+    const onUserTyping = ({ author, userId }) => {
       // Only show typing indicator if it's not from the current user
       if (userId !== currentUserId) {
         setTypingUser(`${author} is typing...`);
         setTimeout(() => setTypingUser(''), 2000);
       }
-    });
+    };
+
+    socket.on('connect', onConnect);
+    socket.on('user_info', onUserInfo);
+    socket.on('receive_message', onReceiveMessage);
+    socket.on('message_status_updated', onMessageStatusUpdated);
+    socket.on('room_users', onRoomUsers);
+    socket.on('user_typing', onUserTyping);
 
     return () => {
-      socket.off('connect');
-      socket.off('user_info');
-      socket.off('receive_message');
-      socket.off('room_users');
-      socket.off('user_typing');
+      socket.off('connect', onConnect);
+      socket.off('user_info', onUserInfo);
+      socket.off('receive_message', onReceiveMessage);
+      socket.off('message_status_updated', onMessageStatusUpdated);
+      socket.off('room_users', onRoomUsers);
+      socket.off('user_typing', onUserTyping);
     };
   }, [currentUserId]);
 
