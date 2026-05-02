@@ -20,6 +20,7 @@ const Chat = ({
   const [incomingCall, setIncomingCall] = useState(null);
   const [showScrollButton, setShowScrollButton] = useState(false);
   const [moodScore, setMoodScore] = useState(0);
+  const [replyingTo, setReplyingTo] = useState(null);
   
   const messagesEndRef = useRef(null);
   const messagesContainerRef = useRef(null);
@@ -187,10 +188,17 @@ const Chat = ({
       message: msg,
       senderId: currentUserId,
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      status: 'sent'
+      status: 'sent',
+      ...(replyingTo ? { replyTo: replyingTo } : {})
     };
     
     socket.emit('send_message', messageData);
+    setReplyingTo(null);
+  };
+
+  // Handle reply to a message
+  const handleReply = (message) => {
+    setReplyingTo(message);
   };
 
   return (
@@ -245,6 +253,7 @@ const Chat = ({
                   key={idx} 
                   message={msg} 
                   isOwn={msg.senderId === currentUserId}
+                  onReply={handleReply}
                 />
               ))}
               <div ref={messagesEndRef} style={{ clear: 'both' }} />
@@ -272,6 +281,8 @@ const Chat = ({
               onTyping={() => {
                 socket.emit('typing', { room, author: name });
               }}
+              replyingTo={replyingTo}
+              onCancelReply={() => setReplyingTo(null)}
             />
             <button 
               onClick={isCallActive ? handleEndCall : handleStartCall}

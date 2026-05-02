@@ -139,6 +139,85 @@
   font-size: 12px;
 }
 
+/* Reply Preview Block */
+.replyPreview {
+  background: rgba(0, 0, 0, 0.1);
+  border-left: 3px solid rgba(255, 255, 255, 0.5);
+  padding: 6px 10px;
+  border-radius: 4px;
+  margin-bottom: 8px;
+  font-size: 12px;
+}
+
+.own .replyPreview {
+  background: rgba(0, 0, 0, 0.15);
+  border-left-color: rgba(255, 255, 255, 0.8);
+}
+
+.other .replyPreview {
+  background: rgba(0, 0, 0, 0.05);
+  border-left-color: var(--accent-main);
+}
+
+.replyPreviewAuthor {
+  font-weight: 600;
+  margin-bottom: 2px;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.other .replyPreviewAuthor {
+  color: var(--accent-main);
+}
+
+.replyPreviewText {
+  opacity: 0.8;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
+}
+
+/* Drag to Reply Icon */
+.dragReplyIcon {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 16px;
+  opacity: 0;
+  color: var(--text-main);
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  pointer-events: none;
+}
+
+.dragReplyIconLeft {
+  right: -40px;
+}
+
+.dragReplyIconRight {
+  left: -40px;
+}
+
+.messageWrapper {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  touch-action: pan-y;
+}
+
+.isDragging {
+  transition: none; /* Disable transition during drag for 1:1 movement */
+}
+
 /* Animations */
 @keyframes fadeIn {
   from {
