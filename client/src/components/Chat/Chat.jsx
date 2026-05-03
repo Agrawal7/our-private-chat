@@ -14,7 +14,8 @@ const Chat = ({
   socket,
   onLeave,
   currentUserId,
-  otherUser
+  otherUser,
+  onReact
 }) => {
   const [isCallActive, setIsCallActive] = useState(false);
   const [incomingCall, setIncomingCall] = useState(null);
@@ -250,10 +251,12 @@ const Chat = ({
             <>
               {chat.map((msg, idx) => (
                 <Message 
-                  key={idx} 
+                  key={msg.id || idx} 
                   message={msg} 
                   isOwn={msg.senderId === currentUserId}
                   onReply={handleReply}
+                  onReact={onReact}
+                  currentUserId={currentUserId}
                 />
               ))}
               <div ref={messagesEndRef} style={{ clear: 'both' }} />
@@ -269,8 +272,10 @@ const Chat = ({
 
         {typingUser && (
           <div className={styles.typingIndicator}>
-            <span className={styles.typingDot}></span>
-            {typingUser}
+            <div className={styles.typingDots}>
+              <span /><span /><span />
+            </div>
+            <span>{typingUser}</span>
           </div>
         )}
 
@@ -288,8 +293,9 @@ const Chat = ({
               onClick={isCallActive ? handleEndCall : handleStartCall}
               className={`${styles.callButton} ${isCallActive ? styles.inCall : ''}`}
               disabled={onlineUsers !== 2}
+              title={isCallActive ? 'End call' : 'Voice call'}
             >
-              {isCallActive ? 'In Call' : 'Call'}
+              {isCallActive ? '📵' : '📞'}
             </button>
           </div>
         </div>

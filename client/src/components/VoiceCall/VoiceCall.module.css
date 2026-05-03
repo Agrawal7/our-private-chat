@@ -1,48 +1,72 @@
 .overlay {
   position: fixed;
-  bottom: 100px;
+  bottom: 110px;
   right: 24px;
   z-index: 1000;
+  animation: slideInRight 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(32px) scale(0.9); }
+  to   { opacity: 1; transform: translateX(0)    scale(1); }
+}
+
+/* ─── Card container ────────────────────────────────────── */
 .container {
-  background: rgba(15, 15, 30, 0.92);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 24px;
-  padding: 24px 28px;
+  background: rgba(10, 8, 24, 0.94);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 26px;
+  padding: 22px 26px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
-  min-width: 200px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255,255,255,0.05);
+  gap: 14px;
+  min-width: 210px;
+  box-shadow:
+    0 24px 60px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(255,255,255,0.04),
+    inset 0 1px 0 rgba(255,255,255,0.06);
+  position: relative;
+  overflow: hidden;
 }
 
-/* Avatar + speaking ring */
+/* Top accent line */
+.container::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 20%; right: 20%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #7c6ff7, #b06ef5, transparent);
+  opacity: 0.7;
+}
+
+/* ─── Avatar + speaking ring ────────────────────────────── */
 .avatarRing {
-  width: 72px;
-  height: 72px;
+  width: 76px;
+  height: 76px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.04);
   border: 2px solid rgba(255, 255, 255, 0.1);
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition: border-color 0.25s, box-shadow 0.25s;
   position: relative;
 }
 
 .avatarRing.speaking {
   border-color: #22c55e;
-  box-shadow: 0 0 0 6px rgba(34, 197, 94, 0.15), 0 0 20px rgba(34, 197, 94, 0.3);
-  animation: pulse 0.8s ease-in-out infinite alternate;
+  box-shadow:
+    0 0 0 6px rgba(34, 197, 94, 0.12),
+    0 0 24px rgba(34, 197, 94, 0.35);
+  animation: speakPulse 0.9s ease-in-out infinite alternate;
 }
 
-@keyframes pulse {
-  from { box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.15); }
-  to   { box-shadow: 0 0 0 10px rgba(34, 197, 94, 0.05); }
+@keyframes speakPulse {
+  from { box-shadow: 0 0 0 4px rgba(34,197,94,0.12), 0 0 16px rgba(34,197,94,0.3); }
+  to   { box-shadow: 0 0 0 12px rgba(34,197,94,0.05), 0 0 30px rgba(34,197,94,0.5); }
 }
 
 .avatar {
@@ -50,17 +74,19 @@
   line-height: 1;
 }
 
+/* ─── Name ──────────────────────────────────────────────── */
 .name {
   font-size: 15px;
   font-weight: 700;
   color: white;
-  letter-spacing: 0.3px;
+  letter-spacing: 0.4px;
 }
 
+/* ─── Status row ────────────────────────────────────────── */
 .statusRow {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 7px;
 }
 
 .dot {
@@ -70,7 +96,7 @@
   flex-shrink: 0;
 }
 
-.dotGreen  { background: #22c55e; box-shadow: 0 0 6px #22c55e; }
+.dotGreen  { background: #22c55e; box-shadow: 0 0 8px rgba(34,197,94,0.8); }
 .dotYellow { background: #f59e0b; animation: blink 1s ease-in-out infinite; }
 
 @keyframes blink {
@@ -80,16 +106,16 @@
 
 .statusText {
   font-size: 13px;
-  color: rgba(255, 255, 255, 0.65);
+  color: rgba(255, 255, 255, 0.6);
   font-variant-numeric: tabular-nums;
-  letter-spacing: 0.3px;
+  letter-spacing: 0.4px;
 }
 
-/* Audio level bar */
+/* ─── Audio level bar ───────────────────────────────────── */
 .levelBar {
   width: 100%;
-  height: 4px;
-  background: rgba(255, 255, 255, 0.08);
+  height: 3px;
+  background: rgba(255, 255, 255, 0.07);
   border-radius: 4px;
   overflow: hidden;
 }
@@ -98,67 +124,70 @@
   height: 100%;
   background: linear-gradient(90deg, #22c55e, #84cc16);
   border-radius: 4px;
-  transition: width 0.1s ease-out;
+  transition: width 0.08s ease-out;
 }
 
-/* Controls */
+/* ─── Controls ──────────────────────────────────────────── */
 .controls {
   display: flex;
-  gap: 12px;
-  margin-top: 4px;
+  gap: 14px;
+  margin-top: 2px;
 }
 
 .controlButton {
-  width: 44px;
-  height: 44px;
+  width: 46px;
+  height: 46px;
   border-radius: 50%;
-  border: none;
-  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.08);
   color: white;
   font-size: 18px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.2s, transform 0.2s;
+  transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
 }
 
 .controlButton:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.16);
   transform: scale(1.08);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.3);
 }
 
 .controlButton:disabled {
-  opacity: 0.35;
+  opacity: 0.3;
   cursor: not-allowed;
 }
 
 .mutedButton {
-  background: rgba(239, 68, 68, 0.25);
-  border: 1px solid rgba(239, 68, 68, 0.4);
+  background: rgba(239, 68, 68, 0.22);
+  border-color: rgba(239, 68, 68, 0.4);
 }
 
 .mutedButton:hover:not(:disabled) {
-  background: rgba(239, 68, 68, 0.4);
+  background: rgba(239, 68, 68, 0.38);
+  box-shadow: 0 4px 14px rgba(239,68,68,0.3);
 }
 
 .endButton {
-  width: 44px;
-  height: 44px;
+  width: 46px;
+  height: 46px;
   border-radius: 50%;
   border: none;
-  background: rgba(239, 68, 68, 0.8);
+  background: rgba(239, 68, 68, 0.85);
   color: white;
   font-size: 18px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.2s, transform 0.2s;
-  box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
+  transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 6px 18px rgba(239, 68, 68, 0.45);
 }
 
 .endButton:hover {
-  background: rgb(239, 68, 68);
+  background: #ef4444;
   transform: scale(1.1);
+  box-shadow: 0 8px 24px rgba(239, 68, 68, 0.6);
 }

@@ -70,8 +70,9 @@ const MessageInput = ({ onSendMessage, onTyping, replyingTo, onCancelReply }) =>
           onClick={handleSend} 
           disabled={!message.trim()}
           className={styles.sendButton}
+          title="Send message"
         >
-          Send →
+          ↑
         </button>
       </div>
     </div>

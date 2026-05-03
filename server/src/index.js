@@ -168,6 +168,29 @@ io.on('connection', (socket) => {
     socket.to(room).emit('message_status_updated', { messageId, status });
   });
 
+  // Message reactions
+  if (!global.messageReactions) global.messageReactions = {};
+  socket.on('react_message', ({ room, messageId, emoji }) => {
+    const key = `${room}:${messageId}`;
+    if (!global.messageReactions[key]) global.messageReactions[key] = {};
+    if (!global.messageReactions[key][emoji]) global.messageReactions[key][emoji] = [];
+    
+    const arr = global.messageReactions[key][emoji];
+    const idx = arr.indexOf(socket.id);
+    if (idx !== -1) {
+      arr.splice(idx, 1); // toggle off
+    } else {
+      arr.push(socket.id); // add reaction
+    }
+    if (arr.length === 0) delete global.messageReactions[key][emoji];
+
+    io.to(room).emit('message_reacted', {
+      messageId,
+      reactions: global.messageReactions[key]
+    });
+    console.log(`✨ Reaction ${emoji} on msg ${messageId} in ${room} by ${socket.id}`);
+  });
+
   // Typing indicator with user ID
   socket.on('typing', ({ room, author }) => {
     socket.to(room).emit('user_typing', { author, userId: socket.id });

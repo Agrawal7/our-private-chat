@@ -1,19 +1,21 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
 :root {
-  --bg-color: #0f111a;
-  --bg-gradient: radial-gradient(circle at top right, #1f1b3b, #0f111a);
-  --glass-bg: rgba(255, 255, 255, 0.05);
-  --glass-border: rgba(255, 255, 255, 0.1);
-  --primary-color: #6366f1;
-  --primary-glow: rgba(99, 102, 241, 0.5);
-  --secondary-color: #a855f7;
-  --text-main: #f8fafc;
-  --text-muted: #94a3b8;
+  --bg-color: #0a0c16;
+  --bg-gradient: radial-gradient(ellipse at 20% 50%, #1a1040 0%, #0a0c16 60%), 
+                 radial-gradient(ellipse at 80% 20%, #0d1f3c 0%, transparent 60%);
+  --glass-bg: rgba(255, 255, 255, 0.04);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --primary-color: #7c6ff7;
+  --primary-glow: rgba(124, 111, 247, 0.45);
+  --secondary-color: #b06ef5;
+  --accent-main: #b06ef5;
+  --text-main: #f0f4ff;
+  --text-muted: #8892a4;
   --danger-color: #ef4444;
   --success-color: #22c55e;
-  --bubble-own: linear-gradient(135deg, #6366f1, #a855f7);
-  --bubble-other: rgba(255, 255, 255, 0.1);
+  --bubble-own: linear-gradient(135deg, #7c6ff7 0%, #b06ef5 100%);
+  --bubble-other: rgba(255, 255, 255, 0.07);
 }
 
 /* Global security styles */
@@ -103,4 +105,17 @@ code {
 @keyframes slideInRight {
   from { opacity: 0; transform: translateX(20px); }
   to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes popIn {
+  0%   { opacity: 0; transform: scale(0.6) translateY(8px); }
+  70%  { transform: scale(1.06) translateY(-2px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+@keyframes reactionBounce {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.5); }
+  70%  { transform: scale(0.9); }
+  100% { transform: scale(1); }
 }

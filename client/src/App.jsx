@@ -67,6 +67,14 @@ function App() {
       );
     };
 
+    const onMessageReacted = ({ messageId, reactions }) => {
+      setChat((prev) =>
+        prev.map(msg =>
+          msg.id === messageId ? { ...msg, reactions } : msg
+        )
+      );
+    };
+
     const onRoomUsers = ({ count, users }) => {
       setOnlineUsers(count);
       setUsersList(users);
@@ -87,6 +95,7 @@ function App() {
     socket.on('user_info', onUserInfo);
     socket.on('receive_message', onReceiveMessage);
     socket.on('message_status_updated', onMessageStatusUpdated);
+    socket.on('message_reacted', onMessageReacted);
     socket.on('room_users', onRoomUsers);
     socket.on('user_typing', onUserTyping);
 
@@ -95,6 +104,7 @@ function App() {
       socket.off('user_info', onUserInfo);
       socket.off('receive_message', onReceiveMessage);
       socket.off('message_status_updated', onMessageStatusUpdated);
+      socket.off('message_reacted', onMessageReacted);
       socket.off('room_users', onRoomUsers);
       socket.off('user_typing', onUserTyping);
     };
@@ -157,6 +167,10 @@ function App() {
     setTimeout(() => socket.connect(), 100);
   };
 
+  const handleReact = (messageId, emoji) => {
+    socket.emit('react_message', { room, messageId, emoji });
+  };
+
   return (
     <div className={styles.app}>
       {!joined ? (
@@ -173,6 +187,7 @@ function App() {
           currentUserId={currentUserId}
           otherUser={otherUser}
           usersList={usersList}
+          onReact={handleReact}
         />
       )}
     </div>
