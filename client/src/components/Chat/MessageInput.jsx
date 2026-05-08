@@ -39,6 +39,7 @@ const MessageInput = ({ onSendMessage, onTyping, replyingTo, onCancelReply }) =>
     typingTimeoutRef.current = setTimeout(() => {}, 2000);
   };
 
+
   return (
     <div className={styles.outerWrapper}>
       {replyingTo && (
@@ -52,6 +53,7 @@ const MessageInput = ({ onSendMessage, onTyping, replyingTo, onCancelReply }) =>
           <button className={styles.replyBannerClose} onClick={onCancelReply} title="Cancel reply">✕</button>
         </div>
       )}
+      
       <div className={styles.inputWrapper}>
         <input
           ref={inputRef}
@@ -66,6 +68,7 @@ const MessageInput = ({ onSendMessage, onTyping, replyingTo, onCancelReply }) =>
           placeholder={replyingTo ? `Reply to ${replyingTo.author}...` : 'Write message...'}
           className={`${styles.input} ${replyingTo ? styles.inputReplyActive : ''}`}
         />
+        
         <button 
           onClick={handleSend} 
           disabled={!message.trim()}
@@ -79,4 +82,4 @@ const MessageInput = ({ onSendMessage, onTyping, replyingTo, onCancelReply }) =>
   );
 };
 
-export default MessageInput;
+export default MessageInput;

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { socket } from './utils/socket';
 import Landing from './components/Landing/Landing';
 import Chat from './components/Chat/Chat';
+import { triggerSparkles } from './utils/sparkles';
 import styles from './App.module.css';
 
 function App() {
@@ -53,6 +54,7 @@ function App() {
 
     const onReceiveMessage = (data) => {
       setChat((prev) => [...prev, data]);
+      triggerSparkles(data.message);
       // If we are receiving someone else's message, mark it as read
       if (data.senderId !== currentUserId) {
         socket.emit('update_message_status', { room: data.room, messageId: data.id, status: 'read' });
@@ -67,13 +69,6 @@ function App() {
       );
     };
 
-    const onMessageReacted = ({ messageId, reactions }) => {
-      setChat((prev) =>
-        prev.map(msg =>
-          msg.id === messageId ? { ...msg, reactions } : msg
-        )
-      );
-    };
 
     const onRoomUsers = ({ count, users }) => {
       setOnlineUsers(count);
@@ -95,7 +90,6 @@ function App() {
     socket.on('user_info', onUserInfo);
     socket.on('receive_message', onReceiveMessage);
     socket.on('message_status_updated', onMessageStatusUpdated);
-    socket.on('message_reacted', onMessageReacted);
     socket.on('room_users', onRoomUsers);
     socket.on('user_typing', onUserTyping);
 
@@ -104,7 +98,6 @@ function App() {
       socket.off('user_info', onUserInfo);
       socket.off('receive_message', onReceiveMessage);
       socket.off('message_status_updated', onMessageStatusUpdated);
-      socket.off('message_reacted', onMessageReacted);
       socket.off('room_users', onRoomUsers);
       socket.off('user_typing', onUserTyping);
     };
@@ -167,9 +160,6 @@ function App() {
     setTimeout(() => socket.connect(), 100);
   };
 
-  const handleReact = (messageId, emoji) => {
-    socket.emit('react_message', { room, messageId, emoji });
-  };
 
   return (
     <div className={styles.app}>
@@ -187,7 +177,6 @@ function App() {
           currentUserId={currentUserId}
           otherUser={otherUser}
           usersList={usersList}
-          onReact={handleReact}
         />
       )}
     </div>

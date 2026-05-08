@@ -1,319 +1,192 @@
-/* ─── Message container ─────────────────────────────────── */
-.message {
-  margin-bottom: 20px;
-  animation: msgIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-  max-width: 80%;
+.messageContainer {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  margin-bottom: 24px;
+  max-width: 85%;
   clear: both;
-  position: relative;
+  animation: msgIn 0.4s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 @keyframes msgIn {
-  from { opacity: 0; transform: scale(0.92) translateY(12px); }
-  to   { opacity: 1; transform: scale(1)    translateY(0); }
+  from { opacity: 0; transform: translateY(12px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
-.own   { float: right; margin-left: auto; transform-origin: bottom right; }
-.other { float: left;  margin-right: auto; transform-origin: bottom left; }
+.own {
+  float: right;
+  flex-direction: row;
+  margin-left: auto;
+}
 
-/* ─── Bubble row (content + react trigger side-by-side) ─── */
-.bubbleRow {
+.other {
+  float: left;
+  flex-direction: row;
+  margin-right: auto;
+}
+
+/* --- Avatar --- */
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
   display: flex;
-  align-items: flex-end;
-  gap: 6px;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 800;
+  color: white;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.own .bubbleRow { flex-direction: row-reverse; }
+.messageContentWrapper {
+  display: flex;
+  flex-direction: column;
+  max-width: 100%;
+}
 
-/* ─── Bubble content ────────────────────────────────────── */
-.content {
-  padding: 11px 16px;
-  border-radius: 20px;
-  font-size: 14.5px;
-  line-height: 1.55;
-  word-wrap: break-word;
+.authorName {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+  margin-left: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* --- Bubble Wrapper --- */
+.bubbleWrapper {
   position: relative;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
-  flex: 1;
-  min-width: 0;
+  display: flex;
+  align-items: center;
+  transition: transform 0.2s cubic-bezier(0.23, 1, 0.32, 1);
+  touch-action: pan-y;
 }
 
-.own .content {
+.isDragging {
+  transition: none;
+}
+
+/* --- Bubble --- */
+.bubble {
+  padding: 12px 16px;
+  border-radius: 22px;
+  font-size: 15px;
+  line-height: 1.5;
+  position: relative;
+  box-shadow: 0 8px 16px -4px rgba(0, 0, 0, 0.3);
+  min-width: 60px;
+  max-width: 100%;
+  word-wrap: break-word;
+}
+
+.own .bubble {
   background: var(--bubble-own);
   color: white;
-  border-bottom-right-radius: 5px;
+  border-bottom-right-radius: 4px;
 }
 
-.other .content {
-  background: var(--bubble-other);
+.other .bubble {
+  background: var(--surface-color);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   color: var(--text-main);
   border: 1px solid var(--glass-border);
-  border-bottom-left-radius: 5px;
+  border-bottom-left-radius: 4px;
 }
 
-/* ─── Author name ───────────────────────────────────────── */
-.author {
-  font-size: 10.5px;
-  font-weight: 700;
-  color: var(--accent-main);
-  margin-bottom: 3px;
-  margin-left: 4px;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  text-transform: uppercase;
-  letter-spacing: 0.6px;
-  opacity: 0.85;
+.text {
+  margin-bottom: 4px;
 }
 
-.authorIcon { font-size: 11px; }
-
-/* ─── Time + status row ─────────────────────────────────── */
-.timeWrapper {
+.meta {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  margin-top: 5px;
   gap: 4px;
+  margin-top: 4px;
+  opacity: 0.7;
 }
-
-.own  .timeWrapper { justify-content: flex-end; }
-.other .timeWrapper { justify-content: flex-start; }
 
 .time {
   font-size: 10px;
-  color: rgba(255, 255, 255, 0.4);
-  letter-spacing: 0.4px;
+  font-weight: 500;
 }
-
-.other .time  { margin-left: 6px; color: var(--text-muted); }
-.own   .time  { margin-right: 2px; }
 
 .status {
-  font-size: 12px;
-  display: flex;
-  align-items: center;
-  margin-right: 6px;
+  font-size: 11px;
 }
 
-.greyTick { color: rgba(255, 255, 255, 0.45); font-weight: bold; }
-.blueTick  {
-  color: #60a5fa;
-  font-weight: bold;
-  text-shadow: 0 0 6px rgba(96, 165, 250, 0.6);
-}
-
-/* ─── System messages ───────────────────────────────────── */
-.systemMessage {
-  text-align: center;
-  margin: 20px 0;
-  animation: fadeIn 0.3s ease;
-  clear: both;
-}
-
-.systemContent {
-  display: inline-block;
-  background: rgba(255, 255, 255, 0.04);
-  backdrop-filter: blur(6px);
-  border: 1px solid var(--glass-border);
-  padding: 6px 14px;
-  border-radius: 20px;
-  font-size: 12px;
-  color: var(--text-muted);
-  max-width: 90%;
-}
-
-.systemIcon { margin-right: 6px; font-size: 12px; }
-
-/* ─── Reply preview in bubble ───────────────────────────── */
+/* --- Reply Preview --- */
 .replyPreview {
-  background: rgba(0, 0, 0, 0.12);
-  border-left: 3px solid rgba(255, 255, 255, 0.55);
+  background: rgba(0, 0, 0, 0.15);
+  border-left: 3px solid var(--primary-color);
   padding: 6px 10px;
-  border-radius: 4px;
-  margin-bottom: 8px;
+  border-radius: 8px;
+  margin-bottom: 10px;
   font-size: 12px;
 }
 
-.own   .replyPreview { background: rgba(0,0,0,0.18); border-left-color: rgba(255,255,255,0.85); }
-.other .replyPreview { background: rgba(0,0,0,0.06); border-left-color: var(--accent-main); }
+.own .replyPreview {
+  border-left-color: white;
+}
 
 .replyPreviewAuthor {
   font-weight: 700;
   margin-bottom: 2px;
-  font-size: 11px;
-  color: rgba(255, 255, 255, 0.85);
 }
-
-.other .replyPreviewAuthor { color: var(--accent-main); }
 
 .replyPreviewText {
-  opacity: 0.75;
-  white-space: nowrap;
+  opacity: 0.8;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
   overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 220px;
 }
 
-/* ─── Hover react trigger button ────────────────────────── */
-.reactTrigger {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  border: 1px solid var(--glass-border);
-  background: rgba(255, 255, 255, 0.07);
-  backdrop-filter: blur(8px);
-  font-size: 14px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  transition: transform 0.15s, background 0.15s;
-  animation: fadeIn 0.15s ease;
-  padding: 0;
-  line-height: 1;
-}
-
-.reactTrigger:hover { transform: scale(1.15); background: rgba(255,255,255,0.14); }
-.reactTriggerOwn   { order: -1; }
-.reactTriggerOther { order: 1; }
-
-/* ─── Floating Reaction Picker ──────────────────────────── */
-.reactionPicker {
-  position: absolute;
-  top: -52px;
-  z-index: 100;
-  display: flex;
-  gap: 4px;
-  background: rgba(18, 16, 38, 0.92);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 999px;
-  padding: 7px 10px;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255,255,255,0.05);
-  animation: popIn 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.reactionPickerOwn   { right: 0; }
-.reactionPickerOther { left: 0; }
-
-.reactionPickerBtn {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  border: 2px solid transparent;
-  background: transparent;
-  font-size: 20px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.15s;
-  padding: 0;
-  line-height: 1;
-}
-
-.reactionPickerBtn:hover {
-  transform: scale(1.45);
-  background: rgba(255, 255, 255, 0.1);
-}
-
-.reactionPickerBtnActive {
-  border-color: var(--primary-color);
-  background: rgba(124, 111, 247, 0.2);
-}
-
-/* ─── Reaction Pill Bar ─────────────────────────────────── */
-.reactionBar {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px;
-  margin-top: 6px;
-  justify-content: flex-start;
-}
-
-.reactionBarOwn { justify-content: flex-end; }
-
-.reactionPill {
-  display: inline-flex;
-  align-items: center;
-  gap: 3px;
-  padding: 3px 9px 3px 7px;
-  border-radius: 999px;
-  border: 1px solid var(--glass-border);
-  background: rgba(255, 255, 255, 0.07);
-  backdrop-filter: blur(8px);
-  cursor: pointer;
-  font-size: 13px;
-  transition: transform 0.15s, background 0.15s, border-color 0.15s;
-  animation: popIn 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.reactionPill:hover { transform: scale(1.08); background: rgba(255,255,255,0.12); }
-
-.reactionPillOwn {
-  background: linear-gradient(135deg, rgba(124,111,247,0.3), rgba(176,110,245,0.3));
-  border-color: rgba(124, 111, 247, 0.5);
-  box-shadow: 0 0 10px rgba(124, 111, 247, 0.25);
-}
-
-.reactionEmoji { font-size: 14px; line-height: 1; }
-
-.reactionCount {
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--text-main);
-  line-height: 1;
-}
-
-/* ─── Drag-to-reply icon ────────────────────────────────── */
+/* --- Drag Indicators --- */
 .dragReplyIcon {
   position: absolute;
   top: 50%;
-  transform: translateY(-50%);
-  font-size: 16px;
-  opacity: 0;
-  color: var(--text-main);
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 50%;
   width: 32px;
   height: 32px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: opacity 0.15s, transform 0.15s;
-  pointer-events: none;
+  font-size: 16px;
+  z-index: 0;
 }
 
-.dragReplyIconLeft  { right: -40px; }
-.dragReplyIconRight { left: -40px; }
+.dragReplyIconLeft { left: -40px; }
+.dragReplyIconRight { right: -40px; }
 
-.messageWrapper {
-  position: relative;
+/* --- System Message --- */
+.systemMessage {
   width: 100%;
   display: flex;
-  align-items: center;
-  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  touch-action: pan-y;
+  justify-content: center;
+  margin: 16px 0;
 }
 
-.isDragging { transition: none; }
-
-/* ─── Animations ────────────────────────────────────────── */
-@keyframes fadeIn {
-  from { opacity: 0; transform: scale(0.95) translateY(6px); }
-  to   { opacity: 1; transform: scale(1) translateY(0); }
+.systemContent {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 12px;
+  color: var(--text-muted);
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-/* ─── Responsive ────────────────────────────────────────── */
-@media (max-width: 768px) {
-  .message { max-width: 88%; }
-  .content { padding: 10px 14px; font-size: 14px; }
-  .author  { font-size: 10px; }
-  .time    { font-size: 9px; }
-  .reactionPicker { top: -50px; padding: 6px 8px; gap: 2px; }
-  .reactionPickerBtn { width: 32px; height: 32px; font-size: 18px; }
+/* --- Responsive --- */
+@media (max-width: 480px) {
+  .messageContainer { max-width: 95%; gap: 8px; }
+  .bubble { padding: 10px 14px; font-size: 14px; }
+  .avatar { width: 32px; height: 32px; font-size: 11px; }
 }

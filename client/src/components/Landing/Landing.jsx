@@ -28,79 +28,91 @@ const Landing = ({ createRoom, joinRoom }) => {
 
   return (
     <div className={styles.container}>
-      <div className={styles.card}>
+      {/* Dynamic Background */}
+      <div className="mesh-gradient">
+        <div className="mesh-ball ball-1"></div>
+        <div className="mesh-ball ball-2"></div>
+        <div className="mesh-ball ball-3"></div>
+      </div>
+
+      <div className={`${styles.card} animate-pop-in`}>
         <div className={styles.header}>
-          <h1 className={styles.title}># Our Private Chat!</h1>
-          <p className={styles.subtitle}>Private two-user chat room</p>
+          <div className={styles.logoBadge}>✨</div>
+          <h1 className={styles.title}>Our Private Chat</h1>
+          <p className={styles.subtitle}>Secure • Instant • Private</p>
         </div>
 
-        <div className={styles.inputGroup}>
-          <label className={styles.label}>Your name</label>
-          <input
-            type="text"
-            placeholder="Enter your name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className={styles.input}
-          />
-        </div>
-
-        <div className={styles.divider}>
-          <span>OR</span>
-        </div>
-
-        {!showJoin ? (
-          <button onClick={handleCreateRoom} className={`${styles.button} ${styles.createButton}`}>
-            Create New Room
-          </button>
-        ) : null}
-
-        {!showJoin ? (
-          <button 
-            onClick={() => setShowJoin(true)} 
-            className={`${styles.button} ${styles.joinButton}`}
-          >
-            Join existing room
-          </button>
-        ) : (
-          <div className={styles.joinForm}>
-            <div className={styles.inputGroup}>
-              <label className={styles.label}>ENTER 6-DIGIT CODE</label>
-              <input
-                type="text"
-                placeholder="e.g., 7J6NNR"
-                value={roomCode}
-                onChange={(e) => setRoomCode(e.target.value.toUpperCase())}
-                className={styles.input}
-                maxLength={6}
-              />
-            </div>
-            <div className={styles.joinActions}>
-              <button onClick={() => setShowJoin(false)} className={styles.backButton}>
-                ← Back
-              </button>
-              <button onClick={handleJoinRoom} className={styles.joinNowButton}>
-                Join →
-              </button>
-            </div>
+        <div className={styles.formSection}>
+          <div className={`${styles.inputGroup} animate-fade-in`} style={{ animationDelay: '0.1s' }}>
+            <label className={styles.label}>What should we call you?</label>
+            <input
+              type="text"
+              placeholder="Enter your name..."
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className={styles.input}
+              autoFocus
+            />
           </div>
-        )}
 
-        <div className={styles.features}>
+          {!showJoin ? (
+            <div className={`${styles.actions} animate-fade-in`} style={{ animationDelay: '0.2s' }}>
+              <button onClick={handleCreateRoom} className={`${styles.button} ${styles.createButton}`}>
+                <span>Create New Room</span>
+                <span className={styles.btnIcon}>＋</span>
+              </button>
+              
+              <div className={styles.divider}>
+                <span>or</span>
+              </div>
+
+              <button 
+                onClick={() => setShowJoin(true)} 
+                className={`${styles.button} ${styles.joinButton}`}
+              >
+                <span>Join Existing Room</span>
+                <span className={styles.btnIcon}>→</span>
+              </button>
+            </div>
+          ) : (
+            <div className={`${styles.joinForm} animate-fade-in`} style={{ animationDelay: '0.2s' }}>
+              <div className={styles.inputGroup}>
+                <label className={styles.label}>6-Digit Room Code</label>
+                <input
+                  type="text"
+                  placeholder="e.g. 7J6NNR"
+                  value={roomCode}
+                  onChange={(e) => setRoomCode(e.target.value.toUpperCase())}
+                  className={styles.input}
+                  maxLength={6}
+                />
+              </div>
+              <div className={styles.joinActions}>
+                <button onClick={() => setShowJoin(false)} className={styles.backButton}>
+                  Back
+                </button>
+                <button onClick={handleJoinRoom} className={styles.joinNowButton}>
+                  Join Room →
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+
+        <div className={`${styles.features} animate-fade-in`} style={{ animationDelay: '0.3s' }}>
           <div className={styles.feature}>
             <span className={styles.featureIcon}>🔒</span>
-            <span className={styles.featureText}>Private</span>
-            <span className={styles.featureDesc}>1-on-1 conversations</span>
+            <div className={styles.featureInfo}>
+              <span className={styles.featureText}>E2E Private</span>
+              <span className={styles.featureDesc}>1-on-1 focus</span>
+            </div>
           </div>
           <div className={styles.feature}>
             <span className={styles.featureIcon}>⚡</span>
-            <span className={styles.featureText}>Real-time</span>
-            <span className={styles.featureDesc}>Instant messaging</span>
-          </div>
-          <div className={styles.feature}>
-            <span className={styles.featureIcon}>🎭</span>
-            <span className={styles.featureText}>No signup</span>
-            <span className={styles.featureDesc}>Just a name & room</span>
+            <div className={styles.featureInfo}>
+              <span className={styles.featureText}>Real-time</span>
+              <span className={styles.featureDesc}>Zero latency</span>
+            </div>
           </div>
         </div>
       </div>

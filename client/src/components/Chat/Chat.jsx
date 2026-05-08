@@ -5,6 +5,8 @@ import MessageInput from './MessageInput';
 import VoiceCall from '../VoiceCall/VoiceCall';
 import { analyzeSentiment } from '../../utils/sentiment';
 
+import { triggerSparkles } from '../../utils/sparkles';
+
 const Chat = ({ 
   chat, 
   name, 
@@ -15,7 +17,6 @@ const Chat = ({
   onLeave,
   currentUserId,
   otherUser,
-  onReact
 }) => {
   const [isCallActive, setIsCallActive] = useState(false);
   const [incomingCall, setIncomingCall] = useState(null);
@@ -180,8 +181,27 @@ const Chat = ({
     return 'partner';
   };
 
+  // Sound effects
+  const playPopSound = () => {
+    const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2354/2354-preview.mp3');
+    audio.volume = 0.4;
+    audio.play().catch(e => console.log('Sound blocked by browser'));
+  };
+
+  // Play sound on incoming message
+  useEffect(() => {
+    if (chat.length > 0) {
+      const lastMsg = chat[chat.length - 1];
+      if (lastMsg.senderId !== currentUserId) {
+        playPopSound();
+      }
+    }
+  }, [chat.length]);
+
   // Handle sending message
   const handleSendMessage = (msg) => {
+    if (msg) triggerSparkles(msg);
+    
     const messageData = {
       id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
       room,
@@ -255,7 +275,6 @@ const Chat = ({
                   message={msg} 
                   isOwn={msg.senderId === currentUserId}
                   onReply={handleReply}
-                  onReact={onReact}
                   currentUserId={currentUserId}
                 />
               ))}
