@@ -33,10 +33,7 @@ const Landing = ({ createRoom, joinRoom }) => {
       {/* Top Bar */}
       <div className={styles.topBar}>
         <div className={styles.logoContainer}>
-          <div className={styles.logoIcon}>
-            <Sparkles size={20} color="#fff" />
-          </div>
-          <span className={styles.logoText}>Our Private Space</span>
+          <img src="/logo.png" alt="Privio" className={styles.topLogoImage} />
         </div>
         <div className={styles.topRightText}>
           <Lock size={14} className={styles.topLockIcon} />
@@ -152,13 +149,11 @@ const Landing = ({ createRoom, joinRoom }) => {
           >
             <div className={styles.header}>
               <motion.div 
-                className={styles.logoBadge}
                 animate={{ y: [-4, 4, -4] }}
                 transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
               >
-                <Sparkles size={32} color="#fff" />
+                <img src="/logo.png" alt="Privio" className={styles.mainLogoImage} />
               </motion.div>
-              <h1 className={styles.title}>Our Private Space</h1>
               <p className={styles.subtitle}>SECURE • INTIMATE • REAL-TIME</p>
             </div>
 

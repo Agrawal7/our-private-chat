@@ -42,7 +42,7 @@ const io = new Server(server, {
 let rooms = {};
 
 app.get('/', (req, res) => {
-  res.json({ message: 'OurRoom Server is running!' });
+  res.json({ message: 'Privio Server is running!' });
 });
 
 app.get('/health', (req, res) => {
@@ -245,7 +245,7 @@ server.on('error', (error) => {
 
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, '0.0.0.0', () => {
-  console.log(`\n🚀 OurRoom Server running on http://localhost:${PORT}`);
+  console.log(`\n🚀 Privio Server running on http://localhost:${PORT}`);
   console.log(`✅ WebSocket ready for connections`);
   console.log(`📊 Health check: http://localhost:${PORT}/health`);
   console.log(`\n✅ Ready to accept connections\n`);
