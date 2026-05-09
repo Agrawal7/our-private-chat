@@ -1,9 +1,9 @@
 .overlay {
   position: fixed;
-  bottom: 110px;
+  bottom: 100px;
   right: 24px;
   z-index: 1000;
-  animation: slideInRight 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  animation: slideInRight 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 @keyframes slideInRight {
@@ -14,16 +14,16 @@
 /* ─── Card container ────────────────────────────────────── */
 .container {
   background: rgba(10, 8, 24, 0.94);
-  backdrop-filter: blur(28px);
-  -webkit-backdrop-filter: blur(28px);
+  backdrop-filter: blur(32px);
+  -webkit-backdrop-filter: blur(32px);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 26px;
-  padding: 22px 26px;
+  border-radius: 28px;
+  padding: 28px 28px 24px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 14px;
-  min-width: 210px;
+  gap: 16px;
+  min-width: 240px;
   box-shadow:
     0 24px 60px rgba(0, 0, 0, 0.6),
     0 0 0 1px rgba(255,255,255,0.04),
@@ -32,54 +32,95 @@
   overflow: hidden;
 }
 
-/* Top accent line */
-.container::before {
-  content: '';
+/* ─── Accent gradient line at top ───────────────────────── */
+.accentLine {
   position: absolute;
-  top: 0; left: 20%; right: 20%;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, #7c6ff7, #b06ef5, transparent);
-  opacity: 0.7;
+  top: 0;
+  left: 12%;
+  right: 12%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--primary-color), var(--secondary-color), transparent);
+  opacity: 0.8;
+  border-radius: 2px;
 }
 
-/* ─── Avatar + speaking ring ────────────────────────────── */
+/* ─── Avatar section ────────────────────────────────────── */
+.avatarSection {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .avatarRing {
-  width: 76px;
-  height: 76px;
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   background: rgba(255, 255, 255, 0.04);
   border: 2px solid rgba(255, 255, 255, 0.1);
-  transition: border-color 0.25s, box-shadow 0.25s;
+  transition: border-color 0.3s, box-shadow 0.3s;
   position: relative;
 }
 
 .avatarRing.speaking {
-  border-color: #22c55e;
+  border-color: var(--success-color);
   box-shadow:
-    0 0 0 6px rgba(34, 197, 94, 0.12),
-    0 0 24px rgba(34, 197, 94, 0.35);
-  animation: speakPulse 0.9s ease-in-out infinite alternate;
-}
-
-@keyframes speakPulse {
-  from { box-shadow: 0 0 0 4px rgba(34,197,94,0.12), 0 0 16px rgba(34,197,94,0.3); }
-  to   { box-shadow: 0 0 0 12px rgba(34,197,94,0.05), 0 0 30px rgba(34,197,94,0.5); }
+    0 0 0 4px rgba(34, 197, 94, 0.1),
+    0 0 20px rgba(34, 197, 94, 0.3);
 }
 
 .avatar {
-  font-size: 32px;
-  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
 }
 
-/* ─── Name ──────────────────────────────────────────────── */
+/* ─── Pulse rings ───────────────────────────────────────── */
+.pulseRing {
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 2px solid var(--success-color);
+  pointer-events: none;
+}
+
+.pulseRing1 {
+  animation: pulseExpand 1.8s ease-out infinite;
+}
+
+.pulseRing2 {
+  animation: pulseExpand 1.8s ease-out infinite 0.6s;
+}
+
+@keyframes pulseExpand {
+  0% { transform: scale(1); opacity: 0.5; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+
+/* ─── Info section ──────────────────────────────────────── */
+.infoSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
 .name {
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 700;
   color: white;
-  letter-spacing: 0.4px;
+  letter-spacing: 0.3px;
+}
+
+.partnerName {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-weight: 500;
 }
 
 /* ─── Status row ────────────────────────────────────────── */
@@ -87,6 +128,7 @@
   display: flex;
   align-items: center;
   gap: 7px;
+  margin-top: 4px;
 }
 
 .dot {
@@ -96,7 +138,7 @@
   flex-shrink: 0;
 }
 
-.dotGreen  { background: #22c55e; box-shadow: 0 0 8px rgba(34,197,94,0.8); }
+.dotGreen  { background: var(--success-color); box-shadow: 0 0 8px rgba(34,197,94,0.8); }
 .dotYellow { background: #f59e0b; animation: blink 1s ease-in-out infinite; }
 
 @keyframes blink {
@@ -104,7 +146,7 @@
   50%       { opacity: 0.3; }
 }
 
-.statusText {
+.statusLabel {
   font-size: 13px;
   color: rgba(255, 255, 255, 0.6);
   font-variant-numeric: tabular-nums;
@@ -122,7 +164,7 @@
 
 .levelFill {
   height: 100%;
-  background: linear-gradient(90deg, #22c55e, #84cc16);
+  background: linear-gradient(90deg, var(--success-color), #84cc16);
   border-radius: 4px;
   transition: width 0.08s ease-out;
 }
@@ -131,28 +173,29 @@
 .controls {
   display: flex;
   gap: 14px;
-  margin-top: 2px;
+  margin-top: 4px;
+  align-items: center;
 }
 
 .controlButton {
-  width: 46px;
-  height: 46px;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.06);
   color: white;
-  font-size: 18px;
-  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .controlButton:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.14);
   transform: scale(1.08);
-  box-shadow: 0 4px 14px rgba(0,0,0,0.3);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+  border-color: rgba(255, 255, 255, 0.2);
 }
 
 .controlButton:disabled {
@@ -161,33 +204,158 @@
 }
 
 .mutedButton {
-  background: rgba(239, 68, 68, 0.22);
-  border-color: rgba(239, 68, 68, 0.4);
+  background: rgba(239, 68, 68, 0.18);
+  border-color: rgba(239, 68, 68, 0.35);
+  color: #fca5a5;
 }
 
 .mutedButton:hover:not(:disabled) {
-  background: rgba(239, 68, 68, 0.38);
-  box-shadow: 0 4px 14px rgba(239,68,68,0.3);
+  background: rgba(239, 68, 68, 0.3);
+  box-shadow: 0 4px 16px rgba(239,68,68,0.25);
 }
 
 .endButton {
-  width: 46px;
-  height: 46px;
+  width: 52px;
+  height: 52px;
   border-radius: 50%;
   border: none;
-  background: rgba(239, 68, 68, 0.85);
+  background: linear-gradient(135deg, #ef4444, #dc2626);
   color: white;
-  font-size: 18px;
-  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
-  box-shadow: 0 6px 18px rgba(239, 68, 68, 0.45);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
 }
 
 .endButton:hover {
-  background: #ef4444;
   transform: scale(1.1);
-  box-shadow: 0 8px 24px rgba(239, 68, 68, 0.6);
+  box-shadow: 0 8px 28px rgba(239, 68, 68, 0.55);
+}
+
+/* ─── Responsive — Mobile bottom bar ────────────────────── */
+@media (max-width: 768px) {
+  .overlay {
+    bottom: 0;
+    left: 0;
+    right: 0;
+    animation: slideUpMobile 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  @keyframes slideUpMobile {
+    from { opacity: 0; transform: translateY(100%); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .container {
+    flex-direction: row;
+    border-radius: 20px 20px 0 0;
+    padding: 16px 20px;
+    padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+    min-width: unset;
+    width: 100%;
+    gap: 14px;
+    align-items: center;
+  }
+
+  .accentLine {
+    left: 20%;
+    right: 20%;
+  }
+
+  .avatarSection {
+    flex-shrink: 0;
+  }
+
+  .avatarRing {
+    width: 48px;
+    height: 48px;
+  }
+
+  .avatar svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .pulseRing { inset: -4px; }
+
+  .infoSection {
+    flex: 1;
+    align-items: flex-start;
+    min-width: 0;
+    gap: 2px;
+  }
+
+  .name {
+    font-size: 14px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+  }
+
+  .partnerName {
+    font-size: 11px;
+  }
+
+  .statusRow {
+    margin-top: 2px;
+  }
+
+  .statusLabel {
+    font-size: 12px;
+  }
+
+  .levelBar {
+    display: none;
+  }
+
+  .controls {
+    gap: 10px;
+    margin-top: 0;
+    flex-shrink: 0;
+  }
+
+  .controlButton {
+    width: 40px;
+    height: 40px;
+  }
+
+  .controlButton svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .endButton {
+    width: 44px;
+    height: 44px;
+  }
+
+  .endButton svg {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+@media (max-width: 380px) {
+  .container {
+    padding: 12px 14px;
+    padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+    gap: 10px;
+  }
+
+  .controlButton {
+    width: 36px;
+    height: 36px;
+  }
+
+  .endButton {
+    width: 40px;
+    height: 40px;
+  }
+
+  .name {
+    font-size: 13px;
+  }
 }

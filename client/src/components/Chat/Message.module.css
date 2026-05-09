@@ -1,9 +1,9 @@
 .messageContainer {
   display: flex;
   align-items: flex-end;
-  gap: 12px;
-  margin-bottom: 24px;
-  max-width: 85%;
+  gap: 8px;
+  margin-bottom: 6px;
+  max-width: 75%;
   clear: both;
 }
 
@@ -19,36 +19,11 @@
   margin-right: auto;
 }
 
-/* --- Avatar --- */
-.avatar {
-  width: 36px;
-  height: 36px;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 13px;
-  font-weight: 800;
-  color: white;
-  flex-shrink: 0;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
 .messageContentWrapper {
   display: flex;
   flex-direction: column;
   max-width: 100%;
-}
-
-.authorName {
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--text-muted);
-  margin-bottom: 4px;
-  margin-left: 4px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  min-width: 0;
 }
 
 /* --- Bubble Wrapper --- */
@@ -66,29 +41,30 @@
 
 /* --- Bubble --- */
 .bubble {
-  padding: 12px 16px;
-  border-radius: 22px;
+  padding: 9px 13px;
+  border-radius: 24px;
   font-size: 15px;
   line-height: 1.5;
   position: relative;
-  box-shadow: 0 8px 16px -4px rgba(0, 0, 0, 0.3);
   min-width: 60px;
   max-width: 100%;
   word-wrap: break-word;
+  overflow-wrap: break-word;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
 .own .bubble {
-  background: var(--bubble-own);
+  background: linear-gradient(135deg, var(--primary-color), var(--accent-main));
   color: white;
   border-bottom-right-radius: 4px;
 }
 
 .other .bubble {
-  background: var(--surface-color);
+  background: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   color: var(--text-main);
-  border: 1px solid var(--glass-border);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-bottom-left-radius: 4px;
 }
 
@@ -101,8 +77,12 @@
   align-items: center;
   justify-content: flex-end;
   gap: 4px;
-  margin-top: 4px;
-  opacity: 0.7;
+  margin-top: 2px;
+  opacity: 0.6;
+}
+
+.own .meta {
+  opacity: 0.8;
 }
 
 .time {
@@ -116,16 +96,17 @@
 
 /* --- Reply Preview --- */
 .replyPreview {
-  background: rgba(0, 0, 0, 0.15);
+  background: rgba(0, 0, 0, 0.2);
   border-left: 3px solid var(--primary-color);
-  padding: 6px 10px;
-  border-radius: 8px;
-  margin-bottom: 10px;
-  font-size: 12px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  margin-bottom: 12px;
+  font-size: 13px;
 }
 
 .own .replyPreview {
-  border-left-color: white;
+  border-left-color: rgba(255, 255, 255, 0.8);
+  background: rgba(0, 0, 0, 0.1);
 }
 
 .replyPreviewAuthor {
@@ -179,8 +160,24 @@
 }
 
 /* --- Responsive --- */
+@media (max-width: 1024px) {
+  .messageContainer { max-width: 80%; }
+}
+
+@media (max-width: 768px) {
+  .messageContainer { max-width: 85%; }
+  .bubble { padding: 12px 16px; font-size: 14px; border-radius: 20px; }
+  .own .bubble { border-bottom-right-radius: 4px; }
+  .other .bubble { border-bottom-left-radius: 4px; }
+  .replyPreview { font-size: 12px; padding: 6px 10px; }
+}
+
 @media (max-width: 480px) {
-  .messageContainer { max-width: 95%; gap: 8px; }
-  .bubble { padding: 10px 14px; font-size: 14px; }
-  .avatar { width: 32px; height: 32px; font-size: 11px; }
+  .messageContainer { max-width: 90%; gap: 6px; margin-bottom: 12px; }
+  .bubble { padding: 10px 14px; font-size: 14px; border-radius: 18px; min-width: 48px; }
+  .own .bubble { border-bottom-right-radius: 4px; }
+  .other .bubble { border-bottom-left-radius: 4px; }
+  .dragReplyIconLeft { left: -32px; }
+  .dragReplyIconRight { right: -32px; }
+  .dragReplyIcon { width: 28px; height: 28px; }
 }

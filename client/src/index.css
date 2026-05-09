@@ -1,24 +1,27 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
 :root {
-  --bg-color: #030008;
-  --bg-gradient: radial-gradient(ellipse at 20% 50%, rgba(30, 10, 45, 0.8) 0%, #030008 70%), 
-                 radial-gradient(ellipse at 80% 20%, rgba(45, 20, 30, 0.6) 0%, transparent 60%);
-  --glass-bg: rgba(255, 255, 255, 0.03);
+  --bg-color: #05050A; /* Deeper black/navy */
+  --bg-gradient: radial-gradient(ellipse at 20% 50%, rgba(139, 92, 246, 0.15) 0%, #05050A 70%), 
+                 radial-gradient(ellipse at 80% 20%, rgba(249, 115, 22, 0.1) 0%, transparent 60%);
+  --glass-bg: rgba(255, 255, 255, 0.02);
   --glass-border: rgba(255, 255, 255, 0.05);
-  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-  --primary-color: #9d4edd;
-  --primary-glow: rgba(157, 78, 221, 0.45);
-  --secondary-color: #ff9e00;
-  --accent-main: #e0aaff;
+  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+  --primary-color: #a855f7; /* Purple */
+  --primary-glow: rgba(168, 85, 247, 0.45);
+  --secondary-color: #f97316; /* Orange */
+  --accent-main: #6366f1; /* Indigo */
   --text-main: #f8fafc;
-  --text-muted: #a0aabf;
-  --danger-color: #ff4d6d;
-  --success-color: #06d6a0;
-  --bubble-own: linear-gradient(135deg, #7b2cbf 0%, #c77dff 100%);
-  --bubble-other: rgba(255, 255, 255, 0.07);
-  --surface-color: rgba(10, 5, 20, 0.65);
-  --premium-glow: 0 0 40px rgba(157, 78, 221, 0.25);
+  --text-muted: #94a3b8;
+  --danger-color: #ef4444;
+  --success-color: #10b981;
+  --button-gradient: linear-gradient(135deg, #a855f7 0%, #f97316 100%);
+  --bubble-own: linear-gradient(135deg, #8b5cf6 0%, #d946ef 100%);
+  --bubble-other: rgba(255, 255, 255, 0.05);
+  --surface-color: rgba(15, 15, 20, 0.7);
+  --premium-glow: 0 0 40px rgba(168, 85, 247, 0.25);
+  --safe-area-top: env(safe-area-inset-top, 0px);
+  --safe-area-bottom: env(safe-area-inset-bottom, 0px);
 }
 
 /* Global security styles */
@@ -56,6 +59,11 @@ img, svg {
   pointer-events: none;
 }
 
+html {
+  height: 100%;
+  overflow: hidden;
+}
+
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
@@ -63,17 +71,20 @@ body {
   -moz-osx-font-smoothing: grayscale;
   background: var(--bg-color);
   color: var(--text-main);
-  min-height: 100vh;
+  height: 100vh;
+  height: 100dvh;
   overflow: hidden;
   position: relative;
 }
 
 #root {
-  min-height: 100vh;
+  height: 100vh;
+  height: 100dvh;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: stretch;
+  padding: 0;
   position: relative;
   z-index: 1;
 }
@@ -93,36 +104,36 @@ body {
 .mesh-ball {
   position: absolute;
   border-radius: 50%;
-  filter: blur(120px);
+  filter: blur(clamp(80px, 8vw, 140px));
   opacity: 0.35;
   animation: moveBall 40s infinite alternate cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .ball-1 {
-  width: 600px;
-  height: 600px;
+  width: clamp(400px, 45vw, 900px);
+  height: clamp(400px, 45vw, 900px);
   background: var(--primary-color);
-  top: -150px;
-  left: -150px;
+  top: -15%;
+  left: -10%;
   animation-duration: 45s;
 }
 
 .ball-2 {
-  width: 700px;
-  height: 700px;
+  width: clamp(450px, 50vw, 1000px);
+  height: clamp(450px, 50vw, 1000px);
   background: #c77dff;
-  bottom: -200px;
-  right: -150px;
+  bottom: -20%;
+  right: -10%;
   animation-duration: 50s;
   animation-delay: -15s;
 }
 
 .ball-3 {
-  width: 500px;
-  height: 500px;
+  width: clamp(350px, 40vw, 800px);
+  height: clamp(350px, 40vw, 800px);
   background: var(--secondary-color);
-  top: 50%;
-  left: 40%;
+  top: 40%;
+  left: 35%;
   animation-duration: 42s;
   animation-delay: -25s;
 }
@@ -165,4 +176,4 @@ body {
 
 .animate-fade-in { animation: fadeIn 0.6s cubic-bezier(0.23, 1, 0.32, 1) forwards; }
 .animate-pop-in { animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
-.animate-scale-in { animation: scaleIn 0.5s cubic-bezier(0.23, 1, 0.32, 1) forwards; }
+.animate-scale-in { animation: scaleIn 0.5s cubic-bezier(0.23, 1, 0.32, 1) forwards; }

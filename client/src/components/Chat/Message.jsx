@@ -2,7 +2,6 @@ import React, { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Reply, Check, CheckCheck } from 'lucide-react';
 import styles from './Message.module.css';
-import { getAvatarColor, getInitials } from '../../utils/avatar';
 
 const Message = ({ message, isOwn, onReply, currentUserId }) => {
   const [dragOffset, setDragOffset] = useState(0);
@@ -85,19 +84,7 @@ const Message = ({ message, isOwn, onReply, currentUserId }) => {
       exit={{ opacity: 0, scale: 0.9 }}
       transition={{ duration: 0.3, type: "spring", stiffness: 250, damping: 25 }}
     >
-      {!isOwn && (
-        <div 
-          className={styles.avatar} 
-          style={{ backgroundColor: getAvatarColor(message.author) }}
-          title={message.author}
-        >
-          {getInitials(message.author)}
-        </div>
-      )}
-
       <div className={styles.messageContentWrapper}>
-        {!isOwn && <div className={styles.authorName}>{message.author}</div>}
-        
         <div
           ref={wrapperRef}
           className={`${styles.bubbleWrapper} ${isDragging ? styles.isDragging : ''}`}
@@ -146,16 +133,6 @@ const Message = ({ message, isOwn, onReply, currentUserId }) => {
           </div>
         </div>
       </div>
-
-      {isOwn && (
-        <div 
-          className={styles.avatar} 
-          style={{ backgroundColor: getAvatarColor(message.author) }}
-          title="You"
-        >
-          {getInitials(message.author)}
-        </div>
-      )}
     </motion.div>
   );
 };

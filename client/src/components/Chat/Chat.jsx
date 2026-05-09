@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Phone, PhoneOff, PhoneIncoming, MessageCircle, ArrowDown, Users, Copy, LogOut, Check } from 'lucide-react';
+import { Phone, PhoneOff, PhoneCall, ArrowDown, Users, Copy, LogOut, Check, Lock, Zap, Shield, UserCircle2, Sparkles, Menu, X } from 'lucide-react';
 import styles from './Chat.module.css';
 import Message from './Message';
 import MessageInput from './MessageInput';
@@ -25,6 +25,8 @@ const Chat = ({
   const [moodScore, setMoodScore] = useState(0);
   const [replyingTo, setReplyingTo] = useState(null);
   const [copied, setCopied] = useState(false);
+  const [inviteCopied, setInviteCopied] = useState(false);
+  const [showSidebar, setShowSidebar] = useState(false);
   
   const messagesEndRef = useRef(null);
   const messagesContainerRef = useRef(null);
@@ -46,12 +48,10 @@ const Chat = ({
     if (moodScore >= 2) {
       return {
         background: 'linear-gradient(135deg, rgba(236, 72, 153, 0.05) 0%, rgba(245, 158, 11, 0.05) 100%)',
-        boxShadow: '0 25px 50px -12px rgba(236, 72, 153, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.1)'
       };
     } else if (moodScore <= -2) {
       return {
         background: 'linear-gradient(135deg, rgba(220, 38, 38, 0.05) 0%, rgba(76, 29, 149, 0.05) 100%)',
-        boxShadow: '0 25px 50px -12px rgba(220, 38, 38, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.05)'
       };
     }
     return {};
@@ -65,8 +65,11 @@ const Chat = ({
   };
 
   const scrollToBottom = () => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    if (messagesContainerRef.current) {
+      messagesContainerRef.current.scrollTo({
+        top: messagesContainerRef.current.scrollHeight,
+        behavior: 'smooth'
+      });
       setShowScrollButton(false);
       isUserScrolledUpRef.current = false;
     }
@@ -161,6 +164,13 @@ const Chat = ({
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const copyInviteLink = () => {
+    const link = `Join my private space with code: ${room}`;
+    navigator.clipboard.writeText(link);
+    setInviteCopied(true);
+    setTimeout(() => setInviteCopied(false), 2000);
+  };
+
   const getOtherUserName = () => {
     if (otherUser) {
       return otherUser.displayName || otherUser.name;
@@ -205,123 +215,247 @@ const Chat = ({
     setReplyingTo(message);
   };
 
+  const isWaiting = onlineUsers < 2;
+
   return (
+    <div className={styles.chatPage}>
     <motion.div 
       className={styles.container} 
       style={getDynamicStyle()}
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.95 }}
-      transition={{ duration: 0.5, ease: [0.23, 1, 0.32, 1] }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.5 }}
     >
-      <div className={styles.header}>
-        <div className={styles.headerLeft}>
-          <div className={styles.roomInfo}>
-            <div className={styles.roomCodeLabel}>Private Space</div>
-            <div className={styles.roomCodeValue}>
-              {room}
-              <button onClick={copyRoomCode} className={styles.copyButton} title="Copy code">
-                {copied ? <Check size={14} color="var(--success-color)" /> : <Copy size={14} />}
-              </button>
-            </div>
-          </div>
-          <button onClick={onLeave} className={styles.leaveButton}>
-            <LogOut size={14} style={{ marginRight: 6, verticalAlign: 'middle' }} />
-            Leave
-          </button>
-        </div>
-        
-        <div className={styles.status}>
-          <span className={onlineUsers === 2 ? styles.online : styles.waiting}></span>
-          {onlineUsers === 2 ? `Connected with ${getOtherUserName()}` : 'Waiting for partner...'}
-          <span className={styles.userCount}>
-            <Users size={12} style={{ marginRight: 4, verticalAlign: 'middle' }} />
-            {onlineUsers}/2
-          </span>
-        </div>
-      </div>
-
+      {/* Mobile Sidebar Backdrop */}
       <AnimatePresence>
-        {incomingCall && (
-          <motion.div 
-            className={styles.incomingCall}
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-          >
-            <div className={styles.incomingCallContent}>
-              <PhoneIncoming size={20} className={styles.incomingCallIcon} />
-              <span>{incomingCall.from} is calling...</span>
-              <div className={styles.incomingCallActions}>
-                <button onClick={handleAcceptCall} className={styles.acceptCallBtn}>Accept</button>
-                <button onClick={handleRejectCall} className={styles.rejectCallBtn}>Reject</button>
-              </div>
-            </div>
-          </motion.div>
+        {showSidebar && (
+          <div 
+            className={styles.sidebarBackdrop} 
+            onClick={() => setShowSidebar(false)} 
+          />
         )}
       </AnimatePresence>
 
-      <div className={styles.chatArea}>
-        <div className={styles.messagesContainer} ref={messagesContainerRef}>
-          {chat.length === 0 ? (
-            <motion.div 
-              className={styles.welcomeMessage}
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.2 }}
-            >
-              <MessageCircle size={48} color="rgba(255,255,255,0.2)" className={styles.welcomeIcon} />
-              <p>The space is yours. Start sharing with {getOtherUserName()}.</p>
-            </motion.div>
-          ) : (
-            <AnimatePresence initial={false}>
-              {chat.map((msg, idx) => (
-                <Message 
-                  key={msg.id || idx} 
-                  message={msg} 
-                  isOwn={msg.senderId === currentUserId}
-                  onReply={handleReply}
-                  currentUserId={currentUserId}
-                />
-              ))}
-            </AnimatePresence>
-          )}
-          <div ref={messagesEndRef} style={{ clear: 'both' }} />
+      {/* Sidebar Component */}
+      <div className={`${styles.sidebar} ${showSidebar ? styles.sidebarOpen : ''}`}>
+        <div className={styles.sidebarBadge}>
+          <div className={styles.sidebarBadgeInfo}>
+            <span className={styles.badgeLabel}>PRIVATE SPACE</span>
+            <span className={styles.badgeRoom}>{room}</span>
+          </div>
+          <button onClick={copyRoomCode} className={styles.copyBtn} title="Copy code">
+            {copied ? <Check size={18} color="var(--success-color)" /> : <Copy size={18} />}
+          </button>
         </div>
 
-        <AnimatePresence>
-          {showScrollButton && chat.length > 0 && (
-            <motion.button 
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 10 }}
-              onClick={scrollToBottom} 
-              className={styles.scrollButton}
-            >
-              <ArrowDown size={14} style={{ marginRight: 4, verticalAlign: 'middle' }} /> 
-              New messages
-            </motion.button>
-          )}
-        </AnimatePresence>
+        <div className={styles.sidebarSection}>
+          <h4 className={styles.sectionTitle}>ROOM INFO</h4>
+          <div className={styles.roomDetails}>
+            <span className={styles.roomDetailsLabel}>Private Space</span>
+            <span className={styles.roomDetailsValue}>{room}</span>
+            <p className={styles.roomDetailsDesc}>Share this code with your partner</p>
+            <button onClick={copyInviteLink} className={styles.inviteBtn}>
+              {inviteCopied ? <Check size={16} /> : <Copy size={16} />}
+              {inviteCopied ? 'Copied!' : 'Copy Invite Link'}
+            </button>
+          </div>
+        </div>
 
-        <AnimatePresence>
-          {typingUser && (
-            <motion.div 
-              className={styles.typingIndicator}
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-            >
-              <div className={styles.typingDots}>
-                <span /><span /><span />
+        <div className={styles.sidebarSection}>
+          <h4 className={styles.sectionTitle}>STATUS</h4>
+          <div className={styles.statusCard}>
+            <div className={`${styles.statusRing} ${!isWaiting ? styles.statusRingConnected : ''}`}></div>
+            <div className={styles.statusInfo}>
+              <span className={styles.statusText}>{isWaiting ? 'Waiting for partner...' : 'Connected'}</span>
+              <span className={styles.statusSubtext}>{isWaiting ? "Your partner hasn't joined yet." : `Secure connection established.`}</span>
+            </div>
+          </div>
+        </div>
+
+        <div className={styles.sidebarSection}>
+          <h4 className={styles.sectionTitle}>ROOM FEATURES</h4>
+          <div className={styles.featureList}>
+            <div className={styles.featureItem}>
+              <div className={styles.featureIconWrap}><Lock size={16} /></div>
+              <div className={styles.featureTexts}>
+                <span className={styles.fTitle}>End-to-end</span>
+                <span className={styles.fDesc}>Encrypted</span>
               </div>
-              <span>{typingUser}</span>
+              <Check size={16} color="var(--success-color)" className={styles.checkIcon} />
+            </div>
+            <div className={styles.featureItem}>
+              <div className={styles.featureIconWrap}><Zap size={16} /></div>
+              <div className={styles.featureTexts}>
+                <span className={styles.fTitle}>Real-time</span>
+                <span className={styles.fDesc}>Communication</span>
+              </div>
+              <Check size={16} color="var(--success-color)" className={styles.checkIcon} />
+            </div>
+          </div>
+        </div>
+
+        <div className={styles.sidebarFooter}>
+          <Shield size={20} className={styles.footerShield} />
+          <p>Your privacy is our priority.<br/>We don't store your conversations.</p>
+        </div>
+      </div>
+
+      {/* Main Chat Area */}
+      <div className={styles.mainArea}>
+        <div className={styles.header}>
+          <div className={styles.headerLeft}>
+            <button 
+              className={styles.menuBtn} 
+              onClick={() => setShowSidebar(prev => !prev)}
+              title="Toggle sidebar"
+            >
+              {showSidebar ? <X size={18} /> : <Menu size={18} />}
+            </button>
+            <div className={styles.headerStatus}>
+              <span className={isWaiting ? styles.waitingDot : styles.onlineDot}></span>
+              {isWaiting ? 'Waiting...' : `${getOtherUserName()}`}
+            </div>
+          </div>
+          <div className={styles.headerActions}>
+            <button 
+              onClick={isCallActive ? handleEndCall : handleStartCall}
+              className={`${styles.callBtn} ${isCallActive ? styles.inCall : ''}`}
+              disabled={isWaiting}
+            >
+              {isCallActive ? <PhoneOff size={16} /> : <Phone size={16} />}
+              <span>{isCallActive ? 'End' : 'Call'}</span>
+            </button>
+            <button onClick={onLeave} className={styles.leaveBtn}>
+              <LogOut size={16} />
+              <span>Leave</span>
+            </button>
+            <span className={styles.userCount}>
+              <Users size={14} /> {onlineUsers}/2
+            </span>
+          </div>
+        </div>
+
+        {/* Redesigned Incoming Call */}
+        <AnimatePresence>
+          {incomingCall && (
+            <motion.div 
+              className={styles.incomingCall}
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+            >
+              <div className={styles.incomingCallCard}>
+                <div className={styles.incomingAvatar}>
+                  <div className={styles.incomingAvatarPulse}></div>
+                  <PhoneCall size={20} color="#fff" />
+                </div>
+                <div className={styles.incomingInfo}>
+                  <div className={styles.incomingLabel}>Incoming Call</div>
+                  <div className={styles.incomingName}>{incomingCall.from} is calling...</div>
+                </div>
+                <div className={styles.incomingCallActions}>
+                  <button onClick={handleAcceptCall} className={styles.acceptCallBtn} title="Accept">
+                    <Phone size={18} />
+                  </button>
+                  <button onClick={handleRejectCall} className={styles.rejectCallBtn} title="Decline">
+                    <PhoneOff size={18} />
+                  </button>
+                </div>
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
 
-        <div className={styles.inputArea}>
-          <div className={styles.inputWrapper}>
+        <div className={styles.chatContainer}>
+          {isWaiting ? (
+            <motion.div 
+              className={styles.waitingScreen}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+            >
+              <div className={styles.waitingVisual}>
+                <div className={styles.avatarNode}>
+                  <UserCircle2 size={40} color="rgba(255,255,255,0.5)" />
+                  <span>You</span>
+                </div>
+                <div className={styles.connectionLine}></div>
+                <div className={styles.shieldNode}>
+                  <div className={styles.shieldGlow}></div>
+                  <Lock size={32} color="#fff" />
+                </div>
+                <div className={styles.connectionLine} style={{ borderStyle: 'dashed', opacity: 0.3 }}></div>
+                <div className={`${styles.avatarNode} ${styles.avatarDashed}`}>
+                  <UserCircle2 size={40} color="rgba(255,255,255,0.2)" />
+                  <span>Partner</span>
+                </div>
+              </div>
+              
+              <h2>Waiting for your partner...</h2>
+              <p>Share your private code or invite link<br/>with your partner to start a secure,<br/>real-time conversation.</p>
+              
+              <div className={styles.dividerStars}>
+                <span></span><Sparkles size={16} color="var(--primary-color)" /><span></span>
+              </div>
+              
+              <div className={styles.notificationToast}>
+                <div className={styles.toastIcon}><Sparkles size={16} color="#fff" /></div>
+                <div className={styles.toastText}>
+                  <strong>Secure room created</strong>
+                  <span>Waiting for partner to join...</span>
+                </div>
+              </div>
+            </motion.div>
+          ) : (
+            <div className={styles.messagesContainer} ref={messagesContainerRef}>
+              <AnimatePresence initial={false}>
+                {chat.map((msg, idx) => (
+                  <Message 
+                    key={msg.id || idx} 
+                    message={msg} 
+                    isOwn={msg.senderId === currentUserId}
+                    onReply={handleReply}
+                    currentUserId={currentUserId}
+                  />
+                ))}
+              </AnimatePresence>
+              <div ref={messagesEndRef} style={{ clear: 'both' }} />
+            </div>
+          )}
+
+          <AnimatePresence>
+            {showScrollButton && chat.length > 0 && !isWaiting && (
+              <motion.button 
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 10 }}
+                onClick={scrollToBottom} 
+                className={styles.scrollButton}
+              >
+                <ArrowDown size={14} style={{ marginRight: 4, verticalAlign: 'middle' }} /> 
+                New messages
+              </motion.button>
+            )}
+          </AnimatePresence>
+
+          <AnimatePresence>
+            {typingUser && !isWaiting && (
+              <motion.div 
+                className={styles.typingIndicator}
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+              >
+                <div className={styles.typingDots}>
+                  <span /><span /><span />
+                </div>
+                <span>{typingUser}</span>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          <div className={styles.inputArea}>
             <MessageInput 
               onSendMessage={handleSendMessage}
               onTyping={() => {
@@ -329,17 +463,11 @@ const Chat = ({
               }}
               replyingTo={replyingTo}
               onCancelReply={() => setReplyingTo(null)}
+              disabled={isWaiting}
             />
-            <button 
-              onClick={isCallActive ? handleEndCall : handleStartCall}
-              className={`${styles.callButton} ${isCallActive ? styles.inCall : ''}`}
-              disabled={onlineUsers !== 2}
-              title={isCallActive ? 'End call' : 'Voice call'}
-            >
-              {isCallActive ? <PhoneOff size={20} /> : <Phone size={20} />}
-            </button>
           </div>
         </div>
+
       </div>
 
       {isCallActive && (
@@ -349,9 +477,11 @@ const Chat = ({
           socket={socket} 
           onEndCall={handleEndCall}
           myName={name}
+          otherUserName={getOtherUserName()}
         />
       )}
     </motion.div>
+    </div>
   );
 };
 

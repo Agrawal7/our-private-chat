@@ -1,11 +1,13 @@
 import React, { useEffect, useRef, useState, forwardRef, useImperativeHandle } from 'react';
+import { Mic, MicOff, PhoneOff, Volume2, VolumeX } from 'lucide-react';
 import styles from './VoiceCall.module.css';
 
-const VoiceCall = forwardRef(({ room, socket, onEndCall, myName }, ref) => {
+const VoiceCall = forwardRef(({ room, socket, onEndCall, myName, otherUserName }, ref) => {
   const [duration, setDuration] = useState(0);
   const [isMuted, setIsMuted] = useState(false);
   const [connectionStatus, setConnectionStatus] = useState('connecting');
   const [audioLevel, setAudioLevel] = useState(0);
+  const [isSpeakerOff, setIsSpeakerOff] = useState(false);
 
   const peerConnectionRef = useRef(null);
   const localStreamRef = useRef(null);
@@ -95,6 +97,13 @@ const VoiceCall = forwardRef(({ room, socket, onEndCall, myName }, ref) => {
     if (localStreamRef.current) {
       const track = localStreamRef.current.getAudioTracks()[0];
       if (track) { track.enabled = !track.enabled; setIsMuted(p => !p); }
+    }
+  };
+
+  const toggleSpeaker = () => {
+    if (remoteAudioRef.current) {
+      remoteAudioRef.current.muted = !remoteAudioRef.current.muted;
+      setIsSpeakerOff(prev => !prev);
     }
   };
 
@@ -262,38 +271,71 @@ const VoiceCall = forwardRef(({ room, socket, onEndCall, myName }, ref) => {
   };
 
   const isSpeaking = connectionStatus === 'connected' && audioLevel > 8;
+  const isConnected = connectionStatus === 'connected';
 
   return (
     <div className={styles.overlay}>
       <div className={styles.container}>
-        <div className={`${styles.avatarRing} ${isSpeaking ? styles.speaking : ''}`}>
-          <div className={styles.avatar}>🎤</div>
+        {/* Accent line */}
+        <div className={styles.accentLine}></div>
+
+        {/* Avatar with pulse rings */}
+        <div className={styles.avatarSection}>
+          <div className={`${styles.avatarRing} ${isSpeaking ? styles.speaking : ''}`}>
+            {isSpeaking && (
+              <>
+                <div className={`${styles.pulseRing} ${styles.pulseRing1}`}></div>
+                <div className={`${styles.pulseRing} ${styles.pulseRing2}`}></div>
+              </>
+            )}
+            <div className={styles.avatar}>
+              <Mic size={28} color={isMuted ? 'rgba(255,255,255,0.3)' : '#fff'} />
+            </div>
+          </div>
         </div>
 
-        <div className={styles.name}>{myName}</div>
+        {/* Info */}
+        <div className={styles.infoSection}>
+          <div className={styles.name}>{myName}</div>
+          {otherUserName && isConnected && (
+            <div className={styles.partnerName}>with {otherUserName}</div>
+          )}
 
-        <div className={styles.statusRow}>
-          <span className={`${styles.dot} ${connectionStatus === 'connected' ? styles.dotGreen : styles.dotYellow}`} />
-          <span className={styles.statusText}>{statusText()}</span>
+          <div className={styles.statusRow}>
+            <span className={`${styles.dot} ${isConnected ? styles.dotGreen : styles.dotYellow}`} />
+            <span className={styles.statusLabel}>{statusText()}</span>
+          </div>
         </div>
 
-        {connectionStatus === 'connected' && (
+        {/* Audio level bar */}
+        {isConnected && (
           <div className={styles.levelBar}>
             <div className={styles.levelFill} style={{ width: `${audioLevel}%` }} />
           </div>
         )}
 
+        {/* Controls */}
         <div className={styles.controls}>
           <button
             onClick={toggleMute}
             className={`${styles.controlButton} ${isMuted ? styles.mutedButton : ''}`}
-            disabled={connectionStatus !== 'connected'}
+            disabled={!isConnected}
             title={isMuted ? 'Unmute' : 'Mute'}
           >
-            {isMuted ? '🔇' : '🎤'}
+            {isMuted ? <MicOff size={20} /> : <Mic size={20} />}
           </button>
+
           <button onClick={endCall} className={styles.endButton} title="End call">
-            📵
+            <PhoneOff size={20} />
+          </button>
+
+          <button
+            onClick={toggleSpeaker}
+            className={`${styles.controlButton} ${isSpeakerOff ? styles.mutedButton : ''}`}
+            disabled={!isConnected}
+            title={isSpeakerOff ? 'Speaker on' : 'Speaker off'}
+          >
+            {isSpeakerOff ? <VolumeX size={20} /> : <Volume2 size={20} />}
           </button>
         </div>
       </div>
