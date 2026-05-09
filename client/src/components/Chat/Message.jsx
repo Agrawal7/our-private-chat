@@ -1,4 +1,6 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
+import { motion } from 'framer-motion';
+import { Reply, Check, CheckCheck } from 'lucide-react';
 import styles from './Message.module.css';
 import { getAvatarColor, getInitials } from '../../utils/avatar';
 
@@ -58,14 +60,17 @@ const Message = ({ message, isOwn, onReply, currentUserId }) => {
     startXRef.current = null;
   };
 
-
   if (message.isSystem) {
     return (
-      <div className={styles.systemMessage}>
+      <motion.div 
+        className={styles.systemMessage}
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+      >
         <div className={styles.systemContent}>
           {message.message}
         </div>
-      </div>
+      </motion.div>
     );
   }
 
@@ -73,7 +78,13 @@ const Message = ({ message, isOwn, onReply, currentUserId }) => {
   const iconScale = 0.5 + (iconOpacity * 0.5);
 
   return (
-    <div className={`${styles.messageContainer} ${isOwn ? styles.own : styles.other}`}>
+    <motion.div 
+      className={`${styles.messageContainer} ${isOwn ? styles.own : styles.other}`}
+      initial={{ opacity: 0, y: 20, scale: 0.95 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.9 }}
+      transition={{ duration: 0.3, type: "spring", stiffness: 250, damping: 25 }}
+    >
       {!isOwn && (
         <div 
           className={styles.avatar} 
@@ -107,7 +118,7 @@ const Message = ({ message, isOwn, onReply, currentUserId }) => {
               transform: `translateY(-50%) scale(${iconScale})`
             }}
           >
-            ↩️
+            <Reply size={16} color="white" />
           </div>
 
           <div className={styles.bubble}>
@@ -126,7 +137,9 @@ const Message = ({ message, isOwn, onReply, currentUserId }) => {
               <span className={styles.time}>{message.time}</span>
               {isOwn && (
                 <span className={styles.status}>
-                  {message.status === 'read' ? '✓✓' : message.status === 'delivered' ? '✓✓' : '✓'}
+                  {message.status === 'read' || message.status === 'delivered' ? 
+                    <CheckCheck size={14} color={message.status === 'read' ? "#38bdf8" : "inherit"} /> : 
+                    <Check size={14} />}
                 </span>
               )}
             </div>
@@ -143,7 +156,7 @@ const Message = ({ message, isOwn, onReply, currentUserId }) => {
           {getInitials(message.author)}
         </div>
       )}
-    </div>
+    </motion.div>
   );
 };
 

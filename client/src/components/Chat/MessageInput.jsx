@@ -1,4 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Send, X, CornerDownRight } from 'lucide-react';
 import styles from './MessageInput.module.css';
 
 const MessageInput = ({ onSendMessage, onTyping, replyingTo, onCancelReply }) => {
@@ -39,20 +41,32 @@ const MessageInput = ({ onSendMessage, onTyping, replyingTo, onCancelReply }) =>
     typingTimeoutRef.current = setTimeout(() => {}, 2000);
   };
 
-
   return (
     <div className={styles.outerWrapper}>
-      {replyingTo && (
-        <div className={styles.replyBanner}>
-          <div className={styles.replyBannerBar} />
-          <div className={styles.replyBannerContent}>
-            <span className={styles.replyBannerLabel}>↩ Replying to</span>
-            <span className={styles.replyBannerAuthor}>{replyingTo.author}</span>
-            <span className={styles.replyBannerText}>{replyingTo.message}</span>
-          </div>
-          <button className={styles.replyBannerClose} onClick={onCancelReply} title="Cancel reply">✕</button>
-        </div>
-      )}
+      <AnimatePresence>
+        {replyingTo && (
+          <motion.div 
+            className={styles.replyBanner}
+            initial={{ opacity: 0, y: 10, height: 0 }}
+            animate={{ opacity: 1, y: 0, height: 'auto' }}
+            exit={{ opacity: 0, y: 10, height: 0 }}
+            transition={{ duration: 0.2 }}
+          >
+            <div className={styles.replyBannerBar} />
+            <div className={styles.replyBannerContent}>
+              <span className={styles.replyBannerLabel}>
+                <CornerDownRight size={10} style={{ display: 'inline', marginRight: 4 }} />
+                Replying to
+              </span>
+              <span className={styles.replyBannerAuthor}>{replyingTo.author}</span>
+              <span className={styles.replyBannerText}>{replyingTo.message}</span>
+            </div>
+            <button className={styles.replyBannerClose} onClick={onCancelReply} title="Cancel reply">
+              <X size={14} />
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
       
       <div className={styles.inputWrapper}>
         <input
@@ -75,7 +89,7 @@ const MessageInput = ({ onSendMessage, onTyping, replyingTo, onCancelReply }) =>
           className={styles.sendButton}
           title="Send message"
         >
-          ↑
+          <Send size={18} style={{ marginLeft: 2 }} />
         </button>
       </div>
     </div>

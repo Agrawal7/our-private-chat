@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Phone, PhoneOff, PhoneIncoming, MessageCircle, ArrowDown, Users, Copy, LogOut, Check } from 'lucide-react';
 import styles from './Chat.module.css';
 import Message from './Message';
 import MessageInput from './MessageInput';
 import VoiceCall from '../VoiceCall/VoiceCall';
 import { analyzeSentiment } from '../../utils/sentiment';
-
 import { triggerSparkles } from '../../utils/sparkles';
 
 const Chat = ({ 
@@ -23,6 +24,7 @@ const Chat = ({
   const [showScrollButton, setShowScrollButton] = useState(false);
   const [moodScore, setMoodScore] = useState(0);
   const [replyingTo, setReplyingTo] = useState(null);
+  const [copied, setCopied] = useState(false);
   
   const messagesEndRef = useRef(null);
   const messagesContainerRef = useRef(null);
@@ -43,19 +45,18 @@ const Chat = ({
   const getDynamicStyle = () => {
     if (moodScore >= 2) {
       return {
-        background: 'linear-gradient(135deg, rgba(236, 72, 153, 0.15) 0%, rgba(245, 158, 11, 0.15) 100%)',
-        boxShadow: '0 25px 50px -12px rgba(236, 72, 153, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.2)'
+        background: 'linear-gradient(135deg, rgba(236, 72, 153, 0.05) 0%, rgba(245, 158, 11, 0.05) 100%)',
+        boxShadow: '0 25px 50px -12px rgba(236, 72, 153, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.1)'
       };
     } else if (moodScore <= -2) {
       return {
-        background: 'linear-gradient(135deg, rgba(220, 38, 38, 0.15) 0%, rgba(76, 29, 149, 0.15) 100%)',
-        boxShadow: '0 25px 50px -12px rgba(220, 38, 38, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1)'
+        background: 'linear-gradient(135deg, rgba(220, 38, 38, 0.05) 0%, rgba(76, 29, 149, 0.05) 100%)',
+        boxShadow: '0 25px 50px -12px rgba(220, 38, 38, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.05)'
       };
     }
     return {};
   };
 
-  // Check if user is at bottom
   const checkIfAtBottom = () => {
     if (!messagesContainerRef.current) return true;
     const { scrollTop, scrollHeight, clientHeight } = messagesContainerRef.current;
@@ -63,7 +64,6 @@ const Chat = ({
     return atBottom;
   };
 
-  // Scroll to bottom instantly
   const scrollToBottom = () => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
@@ -72,7 +72,6 @@ const Chat = ({
     }
   };
 
-  // Handle scroll event
   const handleScroll = () => {
     if (!messagesContainerRef.current) return;
     const atBottom = checkIfAtBottom();
@@ -80,12 +79,10 @@ const Chat = ({
     setShowScrollButton(!atBottom && chat.length > 0);
   };
 
-  // Auto-scroll when new messages arrive (sent or received)
   useEffect(() => {
     scrollToBottom();
   }, [chat]);
 
-  // Add scroll event listener
   useEffect(() => {
     const container = messagesContainerRef.current;
     if (container) {
@@ -94,33 +91,27 @@ const Chat = ({
     }
   }, []);
 
-  // Initial scroll to bottom when chat loads
   useEffect(() => {
     setTimeout(() => {
       scrollToBottom();
     }, 100);
   }, []);
 
-  // Listen for incoming calls
   useEffect(() => {
     const handleIncomingCall = ({ from, callerId }) => {
-      console.log('📞 Incoming call from:', from, callerId);
       setIncomingCall({ from, callerId });
     };
 
     const handleCallAccepted = ({ calleeId }) => {
-      console.log('✅ Call accepted by:', calleeId);
       setIsCallActive(true);
       setIncomingCall(null);
     };
 
     const handleCallRejected = () => {
-      console.log('❌ Call rejected');
       setIncomingCall(null);
     };
 
     const handleCallEnded = () => {
-      console.log('🔴 Call ended');
       setIsCallActive(false);
       setIncomingCall(null);
     };
@@ -139,13 +130,11 @@ const Chat = ({
   }, [socket]);
 
   const handleStartCall = () => {
-    console.log('📞 Starting call from:', name);
     setIsCallActive(true);
     socket.emit('call-user', { room, from: name });
   };
 
   const handleAcceptCall = () => {
-    console.log('✅ Accepting call');
     setIsCallActive(true);
     setIncomingCall(null);
     socket.emit('accept-call', { room });
@@ -157,23 +146,21 @@ const Chat = ({
   };
 
   const handleRejectCall = () => {
-    console.log('❌ Rejecting call');
     setIncomingCall(null);
     socket.emit('reject-call', { room });
   };
 
   const handleEndCall = () => {
-    console.log('🔴 Ending call');
     setIsCallActive(false);
     socket.emit('end-call', { room });
   };
 
   const copyRoomCode = () => {
     navigator.clipboard.writeText(room);
-    alert('Room code copied!');
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   };
 
-  // Get the other user's display name
   const getOtherUserName = () => {
     if (otherUser) {
       return otherUser.displayName || otherUser.name;
@@ -181,14 +168,12 @@ const Chat = ({
     return 'partner';
   };
 
-  // Sound effects
   const playPopSound = () => {
     const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2354/2354-preview.mp3');
     audio.volume = 0.4;
     audio.play().catch(e => console.log('Sound blocked by browser'));
   };
 
-  // Play sound on incoming message
   useEffect(() => {
     if (chat.length > 0) {
       const lastMsg = chat[chat.length - 1];
@@ -198,7 +183,6 @@ const Chat = ({
     }
   }, [chat.length]);
 
-  // Handle sending message
   const handleSendMessage = (msg) => {
     if (msg) triggerSparkles(msg);
     
@@ -217,58 +201,80 @@ const Chat = ({
     setReplyingTo(null);
   };
 
-  // Handle reply to a message
   const handleReply = (message) => {
     setReplyingTo(message);
   };
 
   return (
-    <div className={styles.container} style={getDynamicStyle()}>
+    <motion.div 
+      className={styles.container} 
+      style={getDynamicStyle()}
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.95 }}
+      transition={{ duration: 0.5, ease: [0.23, 1, 0.32, 1] }}
+    >
       <div className={styles.header}>
         <div className={styles.headerLeft}>
           <div className={styles.roomInfo}>
-            <div className={styles.roomCodeLabel}>Room Code</div>
+            <div className={styles.roomCodeLabel}>Private Space</div>
             <div className={styles.roomCodeValue}>
               {room}
-              <button onClick={copyRoomCode} className={styles.copyButton}>
-                Copy
+              <button onClick={copyRoomCode} className={styles.copyButton} title="Copy code">
+                {copied ? <Check size={14} color="var(--success-color)" /> : <Copy size={14} />}
               </button>
             </div>
           </div>
           <button onClick={onLeave} className={styles.leaveButton}>
-            Leave Room
+            <LogOut size={14} style={{ marginRight: 6, verticalAlign: 'middle' }} />
+            Leave
           </button>
         </div>
         
         <div className={styles.status}>
           <span className={onlineUsers === 2 ? styles.online : styles.waiting}></span>
           {onlineUsers === 2 ? `Connected with ${getOtherUserName()}` : 'Waiting for partner...'}
-          <span className={styles.userCount}>({onlineUsers}/2 users in room)</span>
+          <span className={styles.userCount}>
+            <Users size={12} style={{ marginRight: 4, verticalAlign: 'middle' }} />
+            {onlineUsers}/2
+          </span>
         </div>
       </div>
 
-      {incomingCall && (
-        <div className={styles.incomingCall}>
-          <div className={styles.incomingCallContent}>
-            <span className={styles.incomingCallIcon}>📞</span>
-            <span>{incomingCall.from} is calling...</span>
-            <div className={styles.incomingCallActions}>
-              <button onClick={handleAcceptCall} className={styles.acceptCallBtn}>Accept</button>
-              <button onClick={handleRejectCall} className={styles.rejectCallBtn}>Reject</button>
+      <AnimatePresence>
+        {incomingCall && (
+          <motion.div 
+            className={styles.incomingCall}
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+          >
+            <div className={styles.incomingCallContent}>
+              <PhoneIncoming size={20} className={styles.incomingCallIcon} />
+              <span>{incomingCall.from} is calling...</span>
+              <div className={styles.incomingCallActions}>
+                <button onClick={handleAcceptCall} className={styles.acceptCallBtn}>Accept</button>
+                <button onClick={handleRejectCall} className={styles.rejectCallBtn}>Reject</button>
+              </div>
             </div>
-          </div>
-        </div>
-      )}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <div className={styles.chatArea}>
         <div className={styles.messagesContainer} ref={messagesContainerRef}>
           {chat.length === 0 ? (
-            <div className={styles.welcomeMessage}>
-              <div className={styles.welcomeIcon}>🐦</div>
-              <p>Connected! Start chatting with {getOtherUserName()}.</p>
-            </div>
+            <motion.div 
+              className={styles.welcomeMessage}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.2 }}
+            >
+              <MessageCircle size={48} color="rgba(255,255,255,0.2)" className={styles.welcomeIcon} />
+              <p>The space is yours. Start sharing with {getOtherUserName()}.</p>
+            </motion.div>
           ) : (
-            <>
+            <AnimatePresence initial={false}>
               {chat.map((msg, idx) => (
                 <Message 
                   key={msg.id || idx} 
@@ -278,25 +284,41 @@ const Chat = ({
                   currentUserId={currentUserId}
                 />
               ))}
-              <div ref={messagesEndRef} style={{ clear: 'both' }} />
-            </>
+            </AnimatePresence>
           )}
+          <div ref={messagesEndRef} style={{ clear: 'both' }} />
         </div>
 
-        {showScrollButton && chat.length > 0 && (
-          <button onClick={scrollToBottom} className={styles.scrollButton}>
-            ↓ New messages
-          </button>
-        )}
+        <AnimatePresence>
+          {showScrollButton && chat.length > 0 && (
+            <motion.button 
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 10 }}
+              onClick={scrollToBottom} 
+              className={styles.scrollButton}
+            >
+              <ArrowDown size={14} style={{ marginRight: 4, verticalAlign: 'middle' }} /> 
+              New messages
+            </motion.button>
+          )}
+        </AnimatePresence>
 
-        {typingUser && (
-          <div className={styles.typingIndicator}>
-            <div className={styles.typingDots}>
-              <span /><span /><span />
-            </div>
-            <span>{typingUser}</span>
-          </div>
-        )}
+        <AnimatePresence>
+          {typingUser && (
+            <motion.div 
+              className={styles.typingIndicator}
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+            >
+              <div className={styles.typingDots}>
+                <span /><span /><span />
+              </div>
+              <span>{typingUser}</span>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         <div className={styles.inputArea}>
           <div className={styles.inputWrapper}>
@@ -314,7 +336,7 @@ const Chat = ({
               disabled={onlineUsers !== 2}
               title={isCallActive ? 'End call' : 'Voice call'}
             >
-              {isCallActive ? '📵' : '📞'}
+              {isCallActive ? <PhoneOff size={20} /> : <Phone size={20} />}
             </button>
           </div>
         </div>
@@ -329,7 +351,7 @@ const Chat = ({
           myName={name}
         />
       )}
-    </div>
+    </motion.div>
   );
 };
 
