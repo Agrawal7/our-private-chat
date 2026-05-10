@@ -37,7 +37,7 @@ const Landing = ({ createRoom, joinRoom }) => {
         </div>
         <div className={styles.topRightText}>
           <Lock size={14} className={styles.topLockIcon} />
-          Your conversations. Your space.
+          Your conversation
         </div>
       </div>
 
