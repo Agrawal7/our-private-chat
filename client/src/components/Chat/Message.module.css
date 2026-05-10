@@ -102,6 +102,13 @@
   border-radius: 10px;
   margin-bottom: 12px;
   font-size: 13px;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.replyPreview:hover {
+  background: rgba(0, 0, 0, 0.3);
+  transform: translateX(2px);
 }
 
 .own .replyPreview {
@@ -157,6 +164,26 @@
   font-weight: 600;
   letter-spacing: 0.3px;
   border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.highlightMessage {
+  animation: highlightGlow 2s ease-out;
+}
+
+@keyframes highlightGlow {
+  0% {
+    filter: brightness(1);
+    transform: scale(1);
+  }
+  20% {
+    filter: brightness(1.4);
+    transform: scale(1.02);
+    box-shadow: 0 0 20px var(--primary-color);
+  }
+  100% {
+    filter: brightness(1);
+    transform: scale(1);
+  }
 }
 
 /* --- Responsive --- */

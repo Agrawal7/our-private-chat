@@ -28,9 +28,10 @@
 }
 
 .topLogoImage {
-  height: 41px;
+  height: 48px;
   width: auto;
   object-fit: contain;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
 }
 
 .topRightText {
@@ -315,12 +316,17 @@
 }
 
 .mainLogoImage {
-  height: 85px;
+  height: 120px;
   width: auto;
   object-fit: contain;
-  margin: 0 auto 20px;
+  margin: 0 auto 24px;
   display: block;
-  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.2));
+  filter: drop-shadow(0 12px 24px rgba(168, 85, 247, 0.3)) drop-shadow(0 0 10px rgba(168, 85, 247, 0.2));
+  transition: transform 0.3s ease;
+}
+
+.mainLogoImage:hover {
+  transform: scale(1.05);
 }
 
 .subtitle {
@@ -642,7 +648,7 @@
   }
 
   .mainLogoImage {
-    height: 69px;
+    height: 90px;
   }
 
   .header {
@@ -662,7 +668,7 @@
   }
 
   .mainLogoImage {
-    height: 61px;
+    height: 80px;
   }
   
   .chatPreview {
@@ -693,11 +699,11 @@
   }
   
   .topLogoImage {
-    height: 33px;
+    height: 40px;
   }
 
   .mainLogoImage {
-    height: 53px;
+    height: 70px;
   }
 
   .subtitle {

@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { Reply, Check, CheckCheck } from 'lucide-react';
 import styles from './Message.module.css';
 
-const Message = ({ message, isOwn, onReply, currentUserId }) => {
+const Message = ({ message, isOwn, onReply, currentUserId, onScrollToMessage }) => {
   const [dragOffset, setDragOffset] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   
@@ -78,6 +78,7 @@ const Message = ({ message, isOwn, onReply, currentUserId }) => {
 
   return (
     <motion.div 
+      id={`msg-${message.id}`}
       className={`${styles.messageContainer} ${isOwn ? styles.own : styles.other}`}
       initial={{ opacity: 0, y: 20, scale: 0.95 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -110,7 +111,10 @@ const Message = ({ message, isOwn, onReply, currentUserId }) => {
 
           <div className={styles.bubble}>
             {message.replyTo && (
-              <div className={styles.replyPreview}>
+              <div 
+                className={styles.replyPreview}
+                onClick={() => onScrollToMessage && onScrollToMessage(message.replyTo.id)}
+              >
                 <div className={styles.replyPreviewAuthor}>
                   {message.replyTo.senderId === currentUserId ? 'You' : message.replyTo.author}
                 </div>

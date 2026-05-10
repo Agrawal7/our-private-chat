@@ -178,6 +178,17 @@ const Chat = ({
     return 'partner';
   };
 
+  const scrollToMessage = (messageId) => {
+    const element = document.getElementById(`msg-${messageId}`);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      element.classList.add(styles.highlightMessage);
+      setTimeout(() => {
+        element.classList.remove(styles.highlightMessage);
+      }, 2000);
+    }
+  };
+
   const playPopSound = () => {
     const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2354/2354-preview.mp3');
     audio.volume = 0.4;
@@ -417,6 +428,7 @@ const Chat = ({
                     isOwn={msg.senderId === currentUserId}
                     onReply={handleReply}
                     currentUserId={currentUserId}
+                    onScrollToMessage={scrollToMessage}
                   />
                 ))}
               </AnimatePresence>

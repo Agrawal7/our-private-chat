@@ -22,12 +22,16 @@ const VoiceCall = forwardRef(({ room, socket, onEndCall, myName, otherUserName }
   // ✅ High-quality audio constraints — this is the main fix for creepy audio
   const audioConstraints = {
     audio: {
-      echoCancellation: true,
-      noiseSuppression: true,
-      autoGainControl: true,
-      sampleRate: 48000,
-      channelCount: 1,
-      latency: 0,
+      echoCancellation: { ideal: true },
+      noiseSuppression: { ideal: true },
+      autoGainControl: { ideal: true },
+      googEchoCancellation: true,
+      googAutoGainControl: true,
+      googNoiseSuppression: true,
+      googHighpassFilter: true,
+      sampleRate: { ideal: 48000 },
+      channelCount: { ideal: 1 },
+      volume: { ideal: 1.0 }
     }
   };
 
@@ -38,10 +42,12 @@ const VoiceCall = forwardRef(({ room, socket, onEndCall, myName, otherUserName }
       { urls: 'stun:stun2.l.google.com:19302' },
       { urls: 'stun:stun3.l.google.com:19302' },
       { urls: 'stun:stun4.l.google.com:19302' },
+      { urls: 'stun:global.stun.twilio.com:3478' },
     ],
     sdpSemantics: 'unified-plan',
     bundlePolicy: 'max-bundle',
     rtcpMuxPolicy: 'require',
+    iceCandidatePoolSize: 10,
   };
 
   const formatDuration = (s) => {
@@ -113,11 +119,19 @@ const VoiceCall = forwardRef(({ room, socket, onEndCall, myName, otherUserName }
     stream.getTracks().forEach(t => pc.addTrack(t, stream));
 
     pc.ontrack = (e) => {
-      console.log('🎵 Remote audio received');
+      console.log('🎵 Remote audio received', e.streams[0]);
       if (remoteAudioRef.current && e.streams[0]) {
         remoteAudioRef.current.srcObject = e.streams[0];
+        remoteAudioRef.current.muted = false;
         remoteAudioRef.current.volume = 1.0;
-        remoteAudioRef.current.play().catch(() => {});
+        
+        // Ensure play is called after interaction
+        const playPromise = remoteAudioRef.current.play();
+        if (playPromise !== undefined) {
+          playPromise.catch(error => {
+            console.warn('Auto-play was prevented. Waiting for user interaction.', error);
+          });
+        }
         setConnectionStatus('connected');
       }
     };
