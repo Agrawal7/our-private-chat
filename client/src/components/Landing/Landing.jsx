@@ -51,7 +51,7 @@ const Landing = ({ createRoom, joinRoom }) => {
             transition={{ duration: 0.6 }}
           >
             <h1>A private space<br/><span className={styles.gradientText}>for real conversations.</span></h1>
-            <p>No audience. No tracking.<br/></p>
+            <p>No audience. No tracking.<br/>Just you and the one who matters.</p>
           </motion.div>
 
           <motion.div 
