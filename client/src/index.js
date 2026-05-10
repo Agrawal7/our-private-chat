@@ -15,50 +15,50 @@ const disableDevTools = () => {
     }
   });
   
-  // Disable keyboard shortcuts
-  document.addEventListener('keydown', (e) => {
-    // Disable F12 (DevTools)
-    if (e.key === 'F12') {
-      e.preventDefault();
-      return false;
-    }
+  // // Disable keyboard shortcuts
+  // document.addEventListener('keydown', (e) => {
+  //   // Disable F12 (DevTools)
+  //   if (e.key === 'F12') {
+  //     e.preventDefault();
+  //     return false;
+  //   }
     
-    // Disable Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+Shift+C (DevTools)
-    if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) {
-      e.preventDefault();
-      return false;
-    }
+  //   // Disable Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+Shift+C (DevTools)
+  //   if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) {
+  //     e.preventDefault();
+  //     return false;
+  //   }
     
-    // Disable Ctrl+U (View Source)
-    if (e.ctrlKey && e.key === 'u') {
-      e.preventDefault();
-      return false;
-    }
+  //   // Disable Ctrl+U (View Source)
+  //   if (e.ctrlKey && e.key === 'u') {
+  //     e.preventDefault();
+  //     return false;
+  //   }
     
-    // Disable Ctrl+S (Save)
-    if (e.ctrlKey && e.key === 's') {
-      e.preventDefault();
-      return false;
-    }
+  //   // Disable Ctrl+S (Save)
+  //   if (e.ctrlKey && e.key === 's') {
+  //     e.preventDefault();
+  //     return false;
+  //   }
     
-    // Disable Ctrl+P (Print)
-    if (e.ctrlKey && e.key === 'p') {
-      e.preventDefault();
-      return false;
-    }
+  //   // Disable Ctrl+P (Print)
+  //   if (e.ctrlKey && e.key === 'p') {
+  //     e.preventDefault();
+  //     return false;
+  //   }
     
-    // Disable Ctrl+R (Refresh) - optional
-    if (e.ctrlKey && e.key === 'r') {
-      e.preventDefault();
-      return false;
-    }
+  //   // Disable Ctrl+R (Refresh) - optional
+  //   if (e.ctrlKey && e.key === 'r') {
+  //     e.preventDefault();
+  //     return false;
+  //   }
     
-    // Disable F5 (Refresh)
-    if (e.key === 'F5') {
-      e.preventDefault();
-      return false;
-    }
-  });
+  //   // Disable F5 (Refresh)
+  //   if (e.key === 'F5') {
+  //     e.preventDefault();
+  //     return false;
+  //   }
+  // });
   
   // Disable drag and drop on non-input elements
   document.addEventListener('dragstart', (e) => {
