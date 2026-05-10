@@ -53,6 +53,10 @@ app.get('/health', (req, res) => {
   });
 });
 
+app.get('/googleffcef127ae91ac9b.html', (req, res) => {
+  res.send('google-site-verification: googleffcef127ae91ac9b.html');
+});
+
 io.on('connection', (socket) => {
   console.log('✅ User connected:', socket.id);
 
