@@ -79,7 +79,6 @@ const MessageInput = ({ onSendMessage, onTyping, replyingTo, onCancelReply, disa
             setMessage(e.target.value);
             handleTyping();
           }}
-          onKeyPress={handleKeyPress}
           onKeyDown={handleKeyPress}
           placeholder={disabled ? "Waiting for partner..." : (replyingTo ? `Reply to ${replyingTo.author}...` : 'Write a message...')}
           className={`${styles.input} ${replyingTo ? styles.inputReplyActive : ''}`}

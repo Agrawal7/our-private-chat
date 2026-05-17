@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { socket } from './utils/socket';
 import Landing from './components/Landing/Landing';
 import Chat from './components/Chat/Chat';
@@ -16,6 +16,7 @@ function App() {
   const [currentUserId, setCurrentUserId] = useState(null);
   const [otherUser, setOtherUser] = useState(null);
   const [usersList, setUsersList] = useState([]);
+  const currentUserIdRef = useRef(null);
 
   // Additional security measures
   useEffect(() => {
@@ -50,13 +51,14 @@ function App() {
     const onUserInfo = (data) => {
       console.log('User info received:', data);
       setCurrentUserId(data.userId);
+      currentUserIdRef.current = data.userId;
     };
 
     const onReceiveMessage = (data) => {
       setChat((prev) => [...prev, data]);
       triggerSparkles(data.message);
       // If we are receiving someone else's message, mark it as read
-      if (data.senderId !== currentUserId) {
+      if (data.senderId !== currentUserIdRef.current) {
         socket.emit('update_message_status', { room: data.room, messageId: data.id, status: 'read' });
       }
     };
@@ -73,14 +75,14 @@ function App() {
     const onRoomUsers = ({ count, users }) => {
       setOnlineUsers(count);
       setUsersList(users);
-      // Find the other user (not the current one)
-      const other = users.find(u => u.id !== currentUserId);
-      setOtherUser(other);
+      // Find the other user (not the current one) - use ref to avoid stale closure
+      const other = users.find(u => u.id !== currentUserIdRef.current);
+      setOtherUser(other || null);
     };
 
     const onUserTyping = ({ author, userId }) => {
       // Only show typing indicator if it's not from the current user
-      if (userId !== currentUserId) {
+      if (userId !== currentUserIdRef.current) {
         setTypingUser(`${author} is typing...`);
         setTimeout(() => setTypingUser(''), 2000);
       }
@@ -101,7 +103,7 @@ function App() {
       socket.off('room_users', onRoomUsers);
       socket.off('user_typing', onUserTyping);
     };
-  }, [currentUserId]);
+  }, []);
 
   const createRoom = (userName) => {
     if (!userName.trim()) {
@@ -154,6 +156,7 @@ function App() {
     setName('');
     setRoom('');
     setCurrentUserId(null);
+    currentUserIdRef.current = null;
     setOtherUser(null);
     setUsersList([]);
     socket.disconnect();

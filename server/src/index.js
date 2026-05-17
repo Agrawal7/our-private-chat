@@ -10,28 +10,33 @@ const server = http.createServer(app);
 const allowedOrigins = [
   "http://localhost:3000", 
   "http://localhost:3001",
-  "https://*.vercel.app",
-  "https://*.onrender.com"
 ];
 
+// Dynamic origin checker for both Express CORS and Socket.IO
+const checkOrigin = function(origin, callback) {
+  if (!origin) return callback(null, true);
+  // Allow localhost
+  if (origin.includes('localhost')) return callback(null, true);
+  // Allow Vercel deployments
+  if (origin.endsWith('.vercel.app')) return callback(null, true);
+  // Allow Render deployments
+  if (origin.endsWith('.onrender.com')) return callback(null, true);
+  // Allow exact matches
+  if (allowedOrigins.includes(origin)) return callback(null, true);
+  // Allow CLIENT_URL from env
+  if (process.env.CLIENT_URL && origin === process.env.CLIENT_URL) return callback(null, true);
+  // Default: allow all for now (tighten in production)
+  return callback(null, true);
+};
+
 app.use(cors({
-  origin: function(origin, callback) {
-    if (!origin) return callback(null, true);
-    if (allowedOrigins.some(allowed => origin.includes(allowed.replace('*', '')))) {
-      return callback(null, true);
-    }
-    // Allow localhost for development
-    if (origin.includes('localhost')) {
-      return callback(null, true);
-    }
-    return callback(null, true); // Allow all for now
-  },
+  origin: checkOrigin,
   credentials: true
 }));
 
 const io = new Server(server, {
   cors: {
-    origin: allowedOrigins,
+    origin: checkOrigin,
     methods: ["GET", "POST"],
     credentials: true
   },
