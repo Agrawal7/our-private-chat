@@ -78,12 +78,13 @@ const Message = ({ message, isOwn, onReply, currentUserId, onScrollToMessage }) 
 
   return (
     <motion.div 
+      layout
       id={`msg-${message.id}`}
       className={`${styles.messageContainer} ${isOwn ? styles.own : styles.other}`}
       initial={{ opacity: 0, y: 20, scale: 0.95 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={{ opacity: 0, scale: 0.9 }}
-      transition={{ duration: 0.3, type: "spring", stiffness: 250, damping: 25 }}
+      transition={{ duration: 0.3, type: "spring", stiffness: 250, damping: 20 }}
     >
       <div className={styles.messageContentWrapper}>
         <div

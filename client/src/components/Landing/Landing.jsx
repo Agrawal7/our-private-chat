@@ -46,9 +46,9 @@ const Landing = ({ createRoom, joinRoom }) => {
         <div className={styles.leftContent}>
           <motion.div 
             className={styles.heroText}
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
+            transition={{ duration: 0.8, type: "spring", bounce: 0.4 }}
           >
             <h1>A private space<br/><span className={styles.gradientText}>for real conversations.</span></h1>
             <p>No audience. No tracking.<br/>Just you and the one who matters.</p>
@@ -58,7 +58,7 @@ const Landing = ({ createRoom, joinRoom }) => {
             className={styles.featuresList}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
+            transition={{ duration: 0.8, type: "spring", bounce: 0.4, delay: 0.15 }}
           >
             <div className={styles.featureItem}>
               <ShieldCheck size={20} className={styles.fIcon} />
@@ -81,9 +81,9 @@ const Landing = ({ createRoom, joinRoom }) => {
           {/* Decorative Chat Preview */}
           <motion.div 
             className={styles.chatPreview}
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
+            initial={{ opacity: 0, scale: 0.9, y: 10 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            transition={{ duration: 0.7, type: "spring", bounce: 0.3, delay: 0.3 }}
           >
             <div className={styles.previewHeader}>
               <span>Room: 7G8X-K2L9 <Lock size={12} style={{marginLeft: 4}}/></span>
@@ -113,7 +113,7 @@ const Landing = ({ createRoom, joinRoom }) => {
             className={styles.statsRow}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.6 }}
+            transition={{ duration: 0.7, type: "spring", bounce: 0.4, delay: 0.45 }}
           >
             <div className={styles.statItem}>
               <Users size={24} className={styles.sIcon} />
@@ -143,9 +143,9 @@ const Landing = ({ createRoom, joinRoom }) => {
         <div className={styles.rightContent}>
           <motion.div 
             className={styles.card}
-            initial={{ opacity: 0, x: 20 }}
+            initial={{ opacity: 0, x: 30 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
+            transition={{ duration: 0.8, type: "spring", bounce: 0.4, delay: 0.2 }}
           >
             <div className={styles.header}>
               <motion.div 

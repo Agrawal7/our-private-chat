@@ -5,7 +5,7 @@ const TRIGGERS = {
     words: [
       'congrats', 'congratulations', 'party', 'celebrate', 'yay', 'win', 'winner', 
       'victory', 'happy', 'birthday', 'hbd', 'anniversary', 'cheers', 'gift', 
-      'balloon', 'surprise', 'gg', 'congrats!', 'congratulations!', 'wow!'
+      'balloon', 'surprise', 'gg', 'congrats!', 'congratulations!', 'wow!', '🎉', '🎊', '🥳'
     ],
     fire: (opts = {}) => {
       confetti({
@@ -20,7 +20,7 @@ const TRIGGERS = {
   hearts: {
     words: [
       'love', 'heart', 'miss you', 'xoxo', 'kiss', 'romantic', 'valentine', 
-      'sweet', 'darling', 'honey', 'mwah', 'lovely', 'crush', 'hug', 'hugs'
+      'sweet', 'darling', 'honey', 'mwah', 'lovely', 'crush', 'hug', 'hugs', '❤️', '💕', '😍', '🥰', '😘'
     ],
     fire: (opts = {}) => {
       const heart = confetti.shapeFromText({ text: '❤️' });
@@ -37,7 +37,7 @@ const TRIGGERS = {
   fire: {
     words: [
       'fire', 'lit', 'hot', 'burn', 'burning', 'spicy', 'flame', 'danger', 
-      'epic', 'amazing', 'insane', 'wild', 'boom'
+      'epic', 'amazing', 'insane', 'wild', 'boom', '🔥', '🧨', '💥'
     ],
     fire: (opts = {}) => {
       confetti({
@@ -54,7 +54,7 @@ const TRIGGERS = {
   stars: {
     words: [
       'wow', 'magic', 'sparkle', 'star', 'stars', 'cool', 'awesome', 'brilliant', 
-      'bright', 'shine', 'shining', 'gold', 'perfect', 'super', 'hero'
+      'bright', 'shine', 'shining', 'gold', 'perfect', 'super', 'hero', '✨', '🌟', '⭐', '🤩'
     ],
     fire: (opts = {}) => {
       confetti({
@@ -70,7 +70,7 @@ const TRIGGERS = {
   snow: {
     words: [
       'cold', 'winter', 'ice', 'snow', 'freeze', 'freezing', 'chilly', 'frost', 
-      'cool down', 'chill'
+      'cool down', 'chill', '❄️', '⛄', '🥶'
     ],
     fire: (opts = {}) => {
       confetti({
@@ -88,7 +88,7 @@ const TRIGGERS = {
   money: {
     words: [
       'money', 'cash', 'rich', 'dollar', 'dollars', 'paid', 'luxury', 'expensive', 
-      'profit', 'diamond', 'gem'
+      'profit', 'diamond', 'gem', '💰', '💸', '🤑', '💎'
     ],
     fire: (opts = {}) => {
       const bill = confetti.shapeFromText({ text: '💵' });
@@ -99,6 +99,45 @@ const TRIGGERS = {
         origin: { y: 0.6 },
         shapes: [bill, coin],
         scalar: 2,
+        ...opts
+      });
+    }
+  },
+  sad: {
+    words: [
+      'sad', 'cry', 'crying', 'tears', 'depressed', 'upset', 'broken', 'heartbreak',
+      'hurt', 'pain', 'sorry', '😢', '😭', '💔', '😞', '😥'
+    ],
+    fire: (opts = {}) => {
+      const tear = confetti.shapeFromText({ text: '💧' });
+      confetti({
+        particleCount: 40,
+        spread: 60,
+        origin: { y: 0.2 },
+        shapes: [tear],
+        scalar: 2,
+        gravity: 1.2,
+        ticks: 300,
+        ...opts
+      });
+    }
+  },
+  angry: {
+    words: [
+      'angry', 'mad', 'furious', 'rage', 'hate', 'annoyed', 'pissed', 'stupid',
+      '😡', '🤬', '😤', '💢'
+    ],
+    fire: (opts = {}) => {
+      const anger = confetti.shapeFromText({ text: '💢' });
+      confetti({
+        particleCount: 50,
+        spread: 100,
+        origin: { y: 0.5 },
+        shapes: [anger],
+        colors: ['#FF0000', '#8B0000'],
+        scalar: 3,
+        gravity: 0.2,
+        ticks: 100,
         ...opts
       });
     }
