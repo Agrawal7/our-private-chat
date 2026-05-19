@@ -1,12 +1,15 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Send, X, CornerDownRight } from 'lucide-react';
+import { Send, X, CornerDownRight, Smile } from 'lucide-react';
+import EmojiPicker from 'emoji-picker-react';
 import styles from './MessageInput.module.css';
 
 const MessageInput = ({ onSendMessage, onTyping, replyingTo, onCancelReply, disabled }) => {
   const [message, setMessage] = useState('');
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const typingTimeoutRef = useRef(null);
   const inputRef = useRef(null);
+  const pickerRef = useRef(null);
 
   // Focus input when a reply is set
   useEffect(() => {
@@ -19,6 +22,24 @@ const MessageInput = ({ onSendMessage, onTyping, replyingTo, onCancelReply, disa
     if (message.trim() && !disabled) {
       onSendMessage(message.trim());
       setMessage('');
+      setShowEmojiPicker(false);
+    }
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (pickerRef.current && !pickerRef.current.contains(event.target) && !event.target.closest(`.${styles.emojiBtn}`)) {
+        setShowEmojiPicker(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const onEmojiClick = (emojiObject) => {
+    setMessage(prev => prev + emojiObject.emoji);
+    if (inputRef.current) {
+      inputRef.current.focus();
     }
   };
 
@@ -85,10 +106,21 @@ const MessageInput = ({ onSendMessage, onTyping, replyingTo, onCancelReply, disa
           disabled={disabled}
         />
         
-        {/* Placeholder for smile icon from the image */}
-        <button className={styles.emojiBtn} disabled={disabled}>
-           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M8 14s1.5 2 4 2 4-2 4-2"></path><line x1="9" y1="9" x2="9.01" y2="9"></line><line x1="15" y1="9" x2="15.01" y2="9"></line></svg>
-        </button>
+        <div className={styles.emojiContainer} ref={pickerRef}>
+          {showEmojiPicker && (
+            <div className={styles.emojiPickerWrapper}>
+              <EmojiPicker onEmojiClick={onEmojiClick} theme="dark" />
+            </div>
+          )}
+          <button 
+            className={styles.emojiBtn} 
+            disabled={disabled}
+            onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+            title="Add emoji"
+          >
+             <Smile size={20} />
+          </button>
+        </div>
 
         <button 
           onClick={handleSend} 

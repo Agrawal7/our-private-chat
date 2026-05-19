@@ -181,6 +181,27 @@
   cursor: not-allowed;
 }
 
+.emojiContainer {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.emojiPickerWrapper {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  right: 0;
+  z-index: 1000;
+  animation: scaleIn 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transform-origin: bottom right;
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.9) translateY(10px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
 /* --- Responsive --- */
 @media (max-width: 768px) {
   .inputWrapper { gap: 8px; }
@@ -191,5 +212,10 @@
 
 @media (max-width: 480px) {
   .sendButton { width: 40px; height: 40px; }
-  .emojiBtn { display: none; } /* Hide on very small screens to save space */
+  .emojiBtn { width: 36px; height: 36px; }
+  
+  /* On very small screens, make picker fill more width or center */
+  .emojiPickerWrapper {
+    right: -40px;
+  }
 }
