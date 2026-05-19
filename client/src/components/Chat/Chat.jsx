@@ -36,10 +36,21 @@ const Chat = ({
   const isUserScrolledUpRef = useRef(false);
 
   useEffect(() => {
-    // Subtle Lo-Fi track for background ambiance
-    audioRef.current = new Audio('https://assets.mixkit.co/music/preview/mixkit-chill-bro-89.mp3');
+    // Custom BGM file from public folder
+    audioRef.current = new Audio('/bgm/bgm.mp3');
     audioRef.current.loop = true;
     audioRef.current.volume = 0.15;
+    
+    // Attempt autoplay because they interacted with the previous screen
+    const playPromise = audioRef.current.play();
+    if (playPromise !== undefined) {
+      playPromise.then(() => {
+        setIsMusicPlaying(true);
+      }).catch(error => {
+        console.log("Autoplay prevented by browser. User needs to interact first.", error);
+        setIsMusicPlaying(false);
+      });
+    }
     
     return () => {
       if (audioRef.current) {
@@ -334,6 +345,21 @@ const Chat = ({
         </div>
 
         <div className={styles.sidebarSection}>
+          <h4 className={styles.sectionTitle}>BACKGROUND MUSIC</h4>
+          <div className={styles.sidebarBgm}>
+            <div className={`${styles.bgmDisk} ${isMusicPlaying ? styles.bgmSpinning : ''}`}>
+              <Music size={14} color="white" />
+            </div>
+            <div className={styles.bgmInfo}>
+              <span className={styles.bgmTitle}>Custom Track</span>
+              <button onClick={toggleMusic} className={styles.bgmToggleBtn}>
+                {isMusicPlaying ? 'Stop Music' : 'Play Music'}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div className={styles.sidebarSection}>
           <h4 className={styles.sectionTitle}>STATUS</h4>
           <div className={styles.statusCard}>
             <div className={`${styles.statusRing} ${!isWaiting ? styles.statusRingConnected : ''}`}></div>
@@ -389,14 +415,6 @@ const Chat = ({
             </div>
           </div>
           <div className={styles.headerActions}>
-            <button 
-              onClick={toggleMusic}
-              className={`${styles.callBtn} ${isMusicPlaying ? styles.inCall : ''}`}
-              title={isMusicPlaying ? "Stop Music" : "Play Lo-Fi"}
-            >
-              {isMusicPlaying ? <VolumeX size={16} /> : <Music size={16} />}
-              <span>BGM</span>
-            </button>
             <button 
               onClick={isCallActive ? handleEndCall : handleStartCall}
               className={`${styles.callBtn} ${isCallActive ? styles.inCall : ''}`}

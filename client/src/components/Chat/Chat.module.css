@@ -150,6 +150,67 @@
   border-color: var(--primary-color);
 }
 
+.sidebarBgm {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(255, 255, 255, 0.02);
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.bgmDisk {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 0 10px rgba(168, 85, 247, 0.3);
+}
+
+.bgmSpinning {
+  animation: spinDisk 3s linear infinite;
+}
+
+@keyframes spinDisk {
+  100% { transform: rotate(360deg); }
+}
+
+.bgmInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.bgmTitle {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-main);
+  letter-spacing: 0.5px;
+}
+
+.bgmToggleBtn {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font-size: 11px;
+  color: var(--primary-color);
+  cursor: pointer;
+  text-align: left;
+  line-height: 1;
+  transition: opacity 0.2s;
+  font-weight: 600;
+}
+
+.bgmToggleBtn:hover {
+  opacity: 0.8;
+}
+
 .statusCard {
   display: flex;
   align-items: center;
