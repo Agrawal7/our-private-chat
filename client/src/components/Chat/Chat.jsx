@@ -426,7 +426,13 @@ const Chat = ({
               {/* Mini Games button */}
               <motion.button
                 className={`${styles.gameBtn} ${showMiniGame ? styles.gameBtnActive : ''}`}
-                onClick={() => setShowMiniGame(p => !p)}
+                onClick={() => {
+                  setShowMiniGame(p => {
+                    const next = !p;
+                    if (next) socket.emit('game_move', { room, action: 'open_panel' });
+                    return next;
+                  });
+                }}
                 disabled={isWaiting}
                 title="Mini Games"
                 whileTap={!isWaiting ? { scale: 0.88 } : {}}

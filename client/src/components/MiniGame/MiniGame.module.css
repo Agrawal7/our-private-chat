@@ -48,6 +48,24 @@
   color: var(--primary-color);
 }
 
+.partnerToastWrap {
+  padding: 0 20px;
+  overflow: hidden;
+}
+
+.partnerToast {
+  background: rgba(168, 85, 247, 0.15);
+  border: 1px solid rgba(168, 85, 247, 0.3);
+  color: #e9d5ff;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 10px 14px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .closeBtn {
   position: absolute;
   top: 14px;

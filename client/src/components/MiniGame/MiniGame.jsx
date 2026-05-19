@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Grid3x3, Hand, RotateCcw, Trophy } from 'lucide-react';
+import { X, Grid3x3, Hand, RotateCcw, Trophy, Gamepad2 } from 'lucide-react';
 import styles from './MiniGame.module.css';
 
 /* ─── Tic-Tac-Toe ─────────────────────────────────────────── */
@@ -299,20 +299,33 @@ const RPS = ({ socket, room, isWaiting }) => {
 /* ─── Main MiniGame Panel ─────────────────────────────────── */
 const MiniGame = ({ socket, room, myName, currentUserId, otherUser, isWaiting, isOpen, onClose, onOpen }) => {
   const [activeGame, setActiveGame] = useState('ttt');
+  const [partnerStatusMsg, setPartnerStatusMsg] = useState('');
 
   // Auto-open and auto-switch game tab when receiving opponent moves/actions
   useEffect(() => {
     const handleRemoteActivity = (payload) => {
-      if (payload.gameType) {
+      if (payload.action === 'open_panel') {
+        if (onOpen && !isOpen) onOpen();
+        setPartnerStatusMsg('Partner opened Mini Games! Choose a game to play.');
+        setTimeout(() => setPartnerStatusMsg(''), 4000);
+      } else if (payload.action === 'sync_tab') {
+        if (payload.gameType && payload.gameType !== activeGame) {
+          setActiveGame(payload.gameType);
+        }
+        if (onOpen && !isOpen) onOpen();
+        const gameName = payload.gameType === 'ttt' ? 'Tic-Tac-Toe' : 'Rock Paper Scissors';
+        setPartnerStatusMsg(`Partner selected ${gameName}! Let's play.`);
+        setTimeout(() => setPartnerStatusMsg(''), 4000);
+      } else if (payload.gameType) {
         if (payload.gameType !== activeGame) {
           setActiveGame(payload.gameType);
         }
-        if (onOpen) onOpen();
+        if (onOpen && !isOpen) onOpen();
       }
     };
     socket.on('game_move', handleRemoteActivity);
     return () => socket.off('game_move', handleRemoteActivity);
-  }, [socket, activeGame, onOpen]);
+  }, [socket, activeGame, onOpen, isOpen]);
 
   return (
     <AnimatePresence>
@@ -332,15 +345,37 @@ const MiniGame = ({ socket, room, myName, currentUserId, otherUser, isWaiting, i
                 <span>Mini Games</span>
               </div>
               <div className={styles.tabRow}>
-                <button className={`${styles.tab} ${activeGame === 'ttt' ? styles.tabActive : ''}`} onClick={() => setActiveGame('ttt')}>
+                <button 
+                  className={`${styles.tab} ${activeGame === 'ttt' ? styles.tabActive : ''}`} 
+                  onClick={() => { setActiveGame('ttt'); socket.emit('game_move', { room, action: 'sync_tab', gameType: 'ttt' }); }}
+                >
                   <Grid3x3 size={14} /> Tic-Tac-Toe
                 </button>
-                <button className={`${styles.tab} ${activeGame === 'rps' ? styles.tabActive : ''}`} onClick={() => setActiveGame('rps')}>
+                <button 
+                  className={`${styles.tab} ${activeGame === 'rps' ? styles.tabActive : ''}`} 
+                  onClick={() => { setActiveGame('rps'); socket.emit('game_move', { room, action: 'sync_tab', gameType: 'rps' }); }}
+                >
                   <Hand size={14} /> Rock Paper Scissors
                 </button>
               </div>
               <button className={styles.closeBtn} onClick={onClose}><X size={18} /></button>
             </div>
+
+            {/* Partner Status Message Toast */}
+            <AnimatePresence>
+              {partnerStatusMsg && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0, marginBottom: 0 }}
+                  animate={{ opacity: 1, height: 'auto', marginBottom: 16 }}
+                  exit={{ opacity: 0, height: 0, marginBottom: 0 }}
+                  className={styles.partnerToastWrap}
+                >
+                  <div className={styles.partnerToast}>
+                    <Gamepad2 size={14} /> <span>{partnerStatusMsg}</span>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
 
             {/* Game Body */}
             <div className={styles.panelBody}>
