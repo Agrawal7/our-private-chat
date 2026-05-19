@@ -48,7 +48,7 @@ function App() {
   useEffect(() => {
     audioRef.current = new Audio('/bgm/bgm.mp3');
     audioRef.current.loop = true;
-    audioRef.current.volume = 0.15;
+    audioRef.current.volume = 0.4;
     audioRef.current.load(); // Force browser to pre-buffer the audio file immediately
 
     const handleFirstInteraction = () => {

@@ -42,7 +42,7 @@ const Chat = ({
       if (isCallActive) {
         globalAudioRef.current.volume = 0.03;
       } else {
-        globalAudioRef.current.volume = 0.15;
+        globalAudioRef.current.volume = 0.4;
       }
     }
   }, [isCallActive, globalAudioRef]);
