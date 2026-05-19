@@ -1,7 +1,16 @@
 import { io } from "socket.io-client";
 
-// Use environment variable for production URL
-const SOCKET_URL = process.env.REACT_APP_SOCKET_URL || "http://localhost:5000";
+// Automatically use local server when running on localhost
+const getSocketUrl = () => {
+  if (typeof window !== 'undefined' && 
+      (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
+    return "http://localhost:5000";
+  }
+  return process.env.REACT_APP_SOCKET_URL || "http://localhost:5000";
+};
+
+const SOCKET_URL = getSocketUrl();
+
 
 console.log("🔌 Connecting to server at:", SOCKET_URL);
 

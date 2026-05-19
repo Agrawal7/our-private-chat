@@ -9,6 +9,25 @@
   overflow: hidden;
 }
 
+@keyframes screenShake {
+  0%  { transform: translate(0, 0) rotate(0deg); }
+  10% { transform: translate(-8px, -4px) rotate(-0.5deg); }
+  20% { transform: translate(8px, 4px) rotate(0.5deg); }
+  30% { transform: translate(-8px, 4px) rotate(0deg); }
+  40% { transform: translate(8px, -4px) rotate(0.5deg); }
+  50% { transform: translate(-6px, 2px) rotate(-0.5deg); }
+  60% { transform: translate(6px, -2px) rotate(0deg); }
+  70% { transform: translate(-4px, 4px) rotate(0.5deg); }
+  80% { transform: translate(4px, -2px) rotate(-0.5deg); }
+  90% { transform: translate(-2px, 2px) rotate(0deg); }
+  100% { transform: translate(0, 0) rotate(0deg); }
+}
+
+.screenShaking {
+  animation: screenShake 0.6s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+
 .container {
   display: flex;
   flex: 1;
@@ -39,7 +58,12 @@
   flex-shrink: 0;
   z-index: 10;
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: none;
 }
+
+.sidebar::-webkit-scrollbar { display: none; }
 
 .sidebarBadge {
   margin: 24px 20px;
@@ -418,6 +442,156 @@
   align-items: center;
   gap: 8px;
   flex-shrink: 0;
+}
+
+/* ─── Nudge Button ──────────────────────────────────────── */
+.nudgeBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.nudgeBtn:hover:not(:disabled) {
+  background: rgba(245, 158, 11, 0.15);
+  border-color: rgba(245, 158, 11, 0.4);
+  color: #f59e0b;
+  box-shadow: 0 0 12px rgba(245, 158, 11, 0.25);
+}
+
+.nudgeBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.nudgeCooldown {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+/* ─── Effect Button & Panel ─────────────────────────────── */
+.effectBtnWrap {
+  position: relative;
+}
+
+.effectBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.effectBtn:hover:not(:disabled) {
+  background: rgba(168, 85, 247, 0.15);
+  border-color: rgba(168, 85, 247, 0.4);
+  color: var(--primary-color);
+}
+
+.effectBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.effectBtnActive {
+  background: rgba(168, 85, 247, 0.18) !important;
+  border-color: rgba(168, 85, 247, 0.5) !important;
+  color: var(--primary-color) !important;
+  box-shadow: 0 0 12px rgba(168, 85, 247, 0.3);
+}
+
+.effectPanel {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  z-index: 50;
+  background: rgba(10, 10, 18, 0.97);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 180px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+}
+
+.effectPill {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: none;
+  background: transparent;
+  color: var(--text-main);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.18s;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.effectPill:hover {
+  background: rgba(168, 85, 247, 0.12);
+  color: var(--primary-color);
+}
+
+.effectPill span:first-child {
+  font-size: 18px;
+  line-height: 1;
+}
+
+/* ─── Mini Game Button ──────────────────────────────────── */
+.gameBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.gameBtn:hover:not(:disabled) {
+  background: rgba(99, 102, 241, 0.15);
+  border-color: rgba(99, 102, 241, 0.4);
+  color: var(--accent-main);
+}
+
+.gameBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.gameBtnActive {
+  background: rgba(99, 102, 241, 0.18) !important;
+  border-color: rgba(99, 102, 241, 0.5) !important;
+  color: var(--accent-main) !important;
+  box-shadow: 0 0 12px rgba(99, 102, 241, 0.3);
 }
 
 .callBtn {
@@ -961,8 +1135,19 @@
 
   .leaveBtn span { display: none; }
 
+  .nudgeBtn, .effectBtn, .gameBtn {
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+  }
+
   .userCount {
     display: none;
+  }
+
+  .effectPanel {
+    right: -60px;
+    min-width: 170px;
   }
 
   .messagesContainer { padding: 12px 14px; }

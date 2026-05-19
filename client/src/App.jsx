@@ -14,7 +14,6 @@ function App() {
   const [onlineUsers, setOnlineUsers] = useState(1);
   const [isMusicPlaying, setIsMusicPlaying] = useState(false);
   const audioRef = useRef(null);
-  const [isConnected, setIsConnected] = useState(false);
   const [currentUserId, setCurrentUserId] = useState(null);
   const [otherUser, setOtherUser] = useState(null);
   const [usersList, setUsersList] = useState([]);
@@ -87,7 +86,6 @@ function App() {
   useEffect(() => {
     const onConnect = () => {
       console.log('Connected to server');
-      setIsConnected(true);
     };
 
     const onUserInfo = (data) => {

@@ -1,0 +1,364 @@
+/* ─── MiniGame Panel Overlay ─────────────────────────────── */
+.overlay {
+  position: absolute;
+  top: 20px;
+  bottom: 80px;
+  right: 22px;
+  z-index: 100;
+  width: clamp(300px, 90vw, 420px);
+  display: flex;
+  flex-direction: column;
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: rgba(10, 10, 18, 0.95);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.04);
+}
+
+/* ─── Panel Header ───────────────────────────────────────── */
+.panelHeader {
+  padding: 16px 20px 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.02);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  position: relative;
+}
+
+.panelTitle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-main);
+  letter-spacing: 0.5px;
+}
+
+.panelTitleIcon {
+  color: var(--primary-color);
+}
+
+.closeBtn {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--text-muted);
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.closeBtn:hover {
+  background: rgba(239, 68, 68, 0.15);
+  color: #fca5a5;
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+/* ─── Tabs ───────────────────────────────────────────────── */
+.tabRow {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+}
+
+.tab {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 10px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: transparent;
+  color: var(--text-muted);
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.tab:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-main);
+}
+
+.tabActive {
+  background: rgba(168, 85, 247, 0.15);
+  border-color: rgba(168, 85, 247, 0.4);
+  color: var(--primary-color);
+}
+
+/* ─── Panel Body ─────────────────────────────────────────── */
+.panelBody {
+  padding: 20px;
+  flex: 1;
+  overflow-y: auto;
+}
+
+/* ─── Shared ─────────────────────────────────────────────── */
+.scoreRow {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.scoreBox {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 10px 8px;
+  gap: 4px;
+}
+
+.scoreBoxMid {
+  flex: 0.8;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 10px 8px;
+  gap: 4px;
+}
+
+.scoreName {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+.scoreNum {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--primary-color);
+}
+
+.statusText {
+  text-align: center;
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 14px;
+  font-weight: 500;
+}
+
+.myTurnText {
+  color: var(--primary-color);
+  font-weight: 700;
+}
+
+.resetBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  margin-top: 16px;
+  padding: 10px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.resetBtn:hover {
+  background: rgba(168, 85, 247, 0.1);
+  border-color: rgba(168, 85, 247, 0.3);
+  color: var(--primary-color);
+}
+
+/* ─── Tic-Tac-Toe ────────────────────────────────────────── */
+.tttWrapper {}
+
+.tttGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.tttCell {
+  aspect-ratio: 1;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 28px;
+  font-weight: 900;
+  transition: background 0.2s, border-color 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+
+.tttCell:hover:not(:disabled) {
+  background: rgba(168, 85, 247, 0.08);
+  border-color: rgba(168, 85, 247, 0.3);
+}
+
+.tttCell:disabled {
+  cursor: default;
+}
+
+.tttWinCell {
+  background: rgba(168, 85, 247, 0.15) !important;
+  border-color: var(--primary-color) !important;
+  box-shadow: 0 0 16px rgba(168, 85, 247, 0.3);
+}
+
+.markX {
+  display: block;
+  color: var(--primary-color);
+  text-shadow: 0 0 12px rgba(168, 85, 247, 0.5);
+}
+
+.markO {
+  display: block;
+  color: var(--secondary-color);
+  text-shadow: 0 0 12px rgba(249, 115, 22, 0.5);
+}
+
+/* ─── Rock Paper Scissors ────────────────────────────────── */
+.rpsWrapper {}
+
+.rpsChoices {}
+
+.rpsOptions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.rpsOption {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 8px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.rpsOption:hover:not(:disabled) {
+  background: rgba(168, 85, 247, 0.1);
+  border-color: rgba(168, 85, 247, 0.4);
+}
+
+.rpsOption:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.rpsEmoji {
+  font-size: 32px;
+  line-height: 1;
+}
+
+.rpsLabel {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.rpsWaiting {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 20px 0;
+}
+
+.rpsChosen {
+  font-size: 52px;
+  animation: rpsChosenPulse 1s ease-in-out infinite;
+}
+
+@keyframes rpsChosenPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.08); }
+}
+
+.rpsWaiting p {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.rpsReveal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0 0;
+}
+
+.rpsRevealRow {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.rpsRevealItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.rpsEmojiBig {
+  font-size: 44px;
+}
+
+.rpsVs {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--text-muted);
+}
+
+.rpsResultText {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--text-main);
+}
+
+.rpsWin .rpsResultText { color: var(--success-color); }
+.rpsLose .rpsResultText { color: var(--danger-color); }
+.rpsDraw .rpsResultText { color: var(--text-muted); }

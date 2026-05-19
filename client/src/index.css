@@ -24,6 +24,78 @@
   --safe-area-bottom: env(safe-area-inset-bottom, 0px);
 }
 
+/* ── Cyberpunk Neon Theme ────────────────────────────────── */
+[data-theme="cyberpunk"] {
+  --bg-color: #060010;
+  --bg-gradient: radial-gradient(ellipse at 20% 50%, rgba(255, 0, 200, 0.18) 0%, #060010 70%),
+                 radial-gradient(ellipse at 80% 20%, rgba(0, 255, 255, 0.12) 0%, transparent 60%);
+  --primary-color: #ff00c8;
+  --primary-glow: rgba(255, 0, 200, 0.5);
+  --secondary-color: #00ffff;
+  --accent-main: #7c3aed;
+  --button-gradient: linear-gradient(135deg, #ff00c8 0%, #00ffff 100%);
+  --bubble-own: linear-gradient(135deg, #ff00c8 0%, #7c3aed 100%);
+}
+
+/* ── Emerald Zen Theme ───────────────────────────────────── */
+[data-theme="emerald"] {
+  --bg-color: #030f07;
+  --bg-gradient: radial-gradient(ellipse at 20% 50%, rgba(16, 185, 129, 0.18) 0%, #030f07 70%),
+                 radial-gradient(ellipse at 80% 20%, rgba(52, 211, 153, 0.1) 0%, transparent 60%);
+  --primary-color: #10b981;
+  --primary-glow: rgba(16, 185, 129, 0.45);
+  --secondary-color: #34d399;
+  --accent-main: #059669;
+  --button-gradient: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+  --bubble-own: linear-gradient(135deg, #059669 0%, #10b981 100%);
+}
+
+/* ── Sunset Gold Theme ───────────────────────────────────── */
+[data-theme="sunset"] {
+  --bg-color: #0f0700;
+  --bg-gradient: radial-gradient(ellipse at 20% 50%, rgba(245, 158, 11, 0.2) 0%, #0f0700 70%),
+                 radial-gradient(ellipse at 80% 20%, rgba(239, 68, 68, 0.12) 0%, transparent 60%);
+  --primary-color: #f59e0b;
+  --primary-glow: rgba(245, 158, 11, 0.5);
+  --secondary-color: #ef4444;
+  --accent-main: #d97706;
+  --button-gradient: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);
+  --bubble-own: linear-gradient(135deg, #d97706 0%, #f59e0b 100%);
+}
+
+/* ── Aurora Borealis Theme ───────────────────────────────── */
+[data-theme="aurora"] {
+  --bg-color: #010c10;
+  --bg-gradient: radial-gradient(ellipse at 20% 50%, rgba(6, 182, 212, 0.18) 0%, #010c10 70%),
+                 radial-gradient(ellipse at 80% 20%, rgba(99, 102, 241, 0.12) 0%, transparent 60%);
+  --primary-color: #06b6d4;
+  --primary-glow: rgba(6, 182, 212, 0.45);
+  --secondary-color: #6366f1;
+  --accent-main: #0891b2;
+  --button-gradient: linear-gradient(135deg, #06b6d4 0%, #6366f1 100%);
+  --bubble-own: linear-gradient(135deg, #0891b2 0%, #06b6d4 100%);
+}
+
+/* ── Screen Shake (Nudge) Animation ──────────────────────── */
+@keyframes screenShake {
+  0%  { transform: translate(0, 0) rotate(0deg); }
+  10% { transform: translate(-8px, -4px) rotate(-1deg); }
+  20% { transform: translate(8px, 4px) rotate(1deg); }
+  30% { transform: translate(-8px, 4px) rotate(0deg); }
+  40% { transform: translate(8px, -4px) rotate(1deg); }
+  50% { transform: translate(-6px, 2px) rotate(-1deg); }
+  60% { transform: translate(6px, -2px) rotate(0deg); }
+  70% { transform: translate(-4px, 4px) rotate(1deg); }
+  80% { transform: translate(4px, -2px) rotate(-1deg); }
+  90% { transform: translate(-2px, 2px) rotate(0deg); }
+  100% { transform: translate(0, 0) rotate(0deg); }
+}
+
+.screenShaking {
+  animation: screenShake 0.6s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+
 /* Global security styles */
 * {
   -webkit-touch-callout: none;
@@ -53,9 +125,18 @@ textarea,
 }
 
 /* Prevent image dragging */
-img, svg {
+img {
   -webkit-user-drag: none;
   user-drag: none;
+  pointer-events: none;
+}
+
+/* SVGs inside buttons should still be clickable */
+button svg, a svg {
+  pointer-events: none;
+}
+
+svg:not(button svg):not(a svg) {
   pointer-events: none;
 }
 

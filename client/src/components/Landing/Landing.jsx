@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, ArrowRight, Lock, Zap, Plus, LogIn, Clock, Users, ShieldCheck, UserCircle, MessageSquare } from 'lucide-react';
+import { ArrowRight, Lock, Zap, Plus, LogIn, Clock, Users, ShieldCheck, UserCircle } from 'lucide-react';
 import styles from './Landing.module.css';
 
 const Landing = ({ createRoom, joinRoom }) => {

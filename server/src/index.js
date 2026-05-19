@@ -219,6 +219,30 @@ io.on('connection', (socket) => {
     socket.to(room).emit('call-ended');
   });
 
+  // ── Theme sync ────────────────────────────────────────────
+  socket.on('change_room_theme', ({ room, theme }) => {
+    console.log(`🎨 Theme changed to "${theme}" in room ${room}`);
+    socket.to(room).emit('room_theme_changed', { theme });
+  });
+
+  // ── Mini-game sync ────────────────────────────────────────
+  socket.on('game_move', ({ room, gameType, action, data }) => {
+    console.log(`🎮 Game move in ${room}: ${gameType} → ${action}`);
+    socket.to(room).emit('game_move', { gameType, action, data });
+  });
+
+  // ── Ambient effect sync ───────────────────────────────────
+  socket.on('send_ambient_effect', ({ room, effectType }) => {
+    console.log(`✨ Ambient effect "${effectType}" triggered in room ${room}`);
+    socket.to(room).emit('receive_ambient_effect', { effectType });
+  });
+
+  // ── Nudge ─────────────────────────────────────────────────
+  socket.on('send_nudge', ({ room }) => {
+    console.log(`📳 Nudge sent in room ${room}`);
+    socket.to(room).emit('receive_nudge');
+  });
+
   // Disconnect
   socket.on('disconnect', () => {
     const room = socket.data?.room;

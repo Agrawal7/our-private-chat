@@ -261,6 +261,7 @@ const VoiceCall = forwardRef(({ room, socket, onEndCall, myName, otherUserName }
       socket.off('call-ended', handleCallEnded);
       cleanup();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [socket, room]);
 
   useEffect(() => {
