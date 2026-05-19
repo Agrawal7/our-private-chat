@@ -152,6 +152,13 @@ function App() {
       return;
     }
 
+    // Play BGM on explicit button click to bypass browser autoplay restrictions
+    if (audioRef.current && audioRef.current.paused) {
+      audioRef.current.play().then(() => {
+        setIsMusicPlaying(true);
+      }).catch(e => console.log('BGM playback failed:', e));
+    }
+
     const randomRoom = Math.random().toString(36).substring(2, 7).toUpperCase();
     
     socket.emit('create_room', { room: randomRoom, name: userName }, (res) => {
@@ -173,6 +180,13 @@ function App() {
     if (!roomCode.trim()) {
       alert('Please enter room code');
       return;
+    }
+
+    // Play BGM on explicit button click to bypass browser autoplay restrictions
+    if (audioRef.current && audioRef.current.paused) {
+      audioRef.current.play().then(() => {
+        setIsMusicPlaying(true);
+      }).catch(e => console.log('BGM playback failed:', e));
     }
 
     socket.emit('join_room', { room: roomCode.toUpperCase(), name: userName }, (res) => {
