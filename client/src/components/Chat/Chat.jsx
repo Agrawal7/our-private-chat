@@ -45,25 +45,25 @@ const Chat = ({
 
   // Calculate dynamic style based on moodScore
   const getDynamicStyle = () => {
-    const baseTransition = 'background 1.5s ease-in-out';
+    const baseTransition = 'background 2s ease-in-out';
     if (moodScore >= 4) {
       return {
-        background: 'linear-gradient(135deg, rgba(236, 72, 153, 0.15) 0%, rgba(245, 158, 11, 0.15) 100%)',
+        background: 'linear-gradient(135deg, rgba(236, 72, 153, 0.25) 0%, rgba(245, 158, 11, 0.25) 100%)',
         transition: baseTransition
       };
     } else if (moodScore >= 2) {
       return {
-        background: 'linear-gradient(135deg, rgba(236, 72, 153, 0.08) 0%, rgba(245, 158, 11, 0.08) 100%)',
+        background: 'linear-gradient(135deg, rgba(236, 72, 153, 0.15) 0%, rgba(245, 158, 11, 0.15) 100%)',
         transition: baseTransition
       };
     } else if (moodScore <= -4) {
       return {
-        background: 'linear-gradient(135deg, rgba(185, 28, 28, 0.15) 0%, rgba(88, 28, 135, 0.15) 100%)',
+        background: 'linear-gradient(135deg, rgba(185, 28, 28, 0.25) 0%, rgba(88, 28, 135, 0.25) 100%)',
         transition: baseTransition
       };
     } else if (moodScore <= -2) {
       return {
-        background: 'linear-gradient(135deg, rgba(220, 38, 38, 0.08) 0%, rgba(76, 29, 149, 0.08) 100%)',
+        background: 'linear-gradient(135deg, rgba(220, 38, 38, 0.15) 0%, rgba(76, 29, 149, 0.15) 100%)',
         transition: baseTransition
       };
     }

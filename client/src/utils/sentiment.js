@@ -4,7 +4,9 @@ const positiveWords = new Set([
   'wonderful', 'beautiful', 'yay', 'yes', 'perfect', 'cool', 'sweet', 'nice',
   'thanks', 'thank', 'haha', 'lol', 'lmao', 'glad', 'fun', 'funny', 'joy',
   'brilliant', 'super', 'stellar', 'epic', 'blessed', 'proud', 'excited',
-  '❤️', '😊', '😂', '🥰', '😍', '🔥', '✨', '👍', '🙌', '🎉', '🌟', '💯', 'grin', 'smile'
+  '❤️', '😊', '😂', '🥰', '😍', '🔥', '✨', '👍', '🙌', '🎉', '🌟', '💯', 'grin', 'smile',
+  'win', 'winner', 'victory', 'magic', 'gorgeous', 'stunning', 'fabulous', 'genius',
+  'hooray', 'cheers', 'woo', 'woohoo', 'wahoo', 'rofl', 'lmfao', 'hehe', 'hihi'
 ]);
 
 const negativeWords = new Set([
@@ -12,7 +14,9 @@ const negativeWords = new Set([
   'horrible', 'no', 'nope', 'never', 'sorry', 'cry', 'crying', 'depressed',
   'annoying', 'stupid', 'dumb', 'idiot', 'suck', 'sucks', 'fail',
   'terrible', 'miserable', 'pain', 'tired', 'exhausted', 'sick', 'gross',
-  '💔', '😢', '😭', '😡', '🤬', '👎', '😒', '😞', '😩', '😤', 'trash'
+  '💔', '😢', '😭', '😡', '🤬', '👎', '😒', '😞', '😩', '😤', 'trash',
+  'angry', 'furious', 'rage', 'annoyed', 'pissed', 'heartbreak', 'broken', 'hurt',
+  'stress', 'stressed', 'anxious', 'scared', 'fear', 'creepy', 'weird', 'yuck'
 ]);
 
 export const analyzeSentiment = (text) => {

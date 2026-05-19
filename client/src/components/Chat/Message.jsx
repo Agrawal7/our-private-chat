@@ -81,10 +81,10 @@ const Message = ({ message, isOwn, onReply, currentUserId, onScrollToMessage }) 
       layout
       id={`msg-${message.id}`}
       className={`${styles.messageContainer} ${isOwn ? styles.own : styles.other}`}
-      initial={{ opacity: 0, y: 20, scale: 0.95 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.9 }}
-      transition={{ duration: 0.3, type: "spring", stiffness: 250, damping: 20 }}
+      initial={{ opacity: 0, y: 30, scale: 0.8, filter: "blur(4px)" }}
+      animate={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
+      exit={{ opacity: 0, scale: 0.8, filter: "blur(4px)" }}
+      transition={{ duration: 0.4, type: "spring", stiffness: 400, damping: 25, mass: 0.8 }}
     >
       <div className={styles.messageContentWrapper}>
         <div
