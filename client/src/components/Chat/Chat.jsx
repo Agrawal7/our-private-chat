@@ -60,6 +60,19 @@ const Chat = ({
     };
   }, []);
 
+  // Professionally lower BGM volume during an active voice call
+  useEffect(() => {
+    if (audioRef.current) {
+      if (isCallActive) {
+        // Fade out slightly during call
+        audioRef.current.volume = 0.03;
+      } else {
+        // Restore normal ambient volume
+        audioRef.current.volume = 0.15;
+      }
+    }
+  }, [isCallActive]);
+
   const toggleMusic = () => {
     if (!audioRef.current) return;
     if (isMusicPlaying) {
