@@ -28,7 +28,12 @@ const MessageInput = ({ onSendMessage, onTyping, replyingTo, onCancelReply, disa
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (pickerRef.current && !pickerRef.current.contains(event.target) && !event.target.closest(`.${styles.emojiBtn}`)) {
+      // Check if click is inside the picker or the button
+      const isInsidePicker = pickerRef.current && pickerRef.current.contains(event.target);
+      const isPickerComponent = event.target.closest('.EmojiPickerReact');
+      const isEmojiBtn = event.target.closest(`.${styles.emojiBtn}`);
+      
+      if (!isInsidePicker && !isPickerComponent && !isEmojiBtn) {
         setShowEmojiPicker(false);
       }
     };
@@ -113,9 +118,14 @@ const MessageInput = ({ onSendMessage, onTyping, replyingTo, onCancelReply, disa
             </div>
           )}
           <button 
+            type="button"
             className={styles.emojiBtn} 
             disabled={disabled}
-            onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setShowEmojiPicker(prev => !prev);
+            }}
             title="Add emoji"
           >
              <Smile size={20} />

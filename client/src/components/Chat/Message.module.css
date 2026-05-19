@@ -72,6 +72,28 @@
   margin-bottom: 4px;
 }
 
+.messageLink {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  font-weight: 500;
+  transition: opacity 0.2s;
+  word-break: break-all;
+}
+
+.messageLink:hover {
+  opacity: 0.8;
+}
+
+.own .messageLink {
+  color: #fff;
+}
+
+.other .messageLink {
+  color: var(--primary-light, #a78bfa);
+}
+
+
 .meta {
   display: flex;
   align-items: center;

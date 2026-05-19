@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Phone, PhoneOff, PhoneCall, ArrowDown, Users, Copy, LogOut, Check, Lock, Zap, Shield, UserCircle2, Sparkles, Menu, X } from 'lucide-react';
+import { Phone, PhoneOff, PhoneCall, ArrowDown, Users, Copy, LogOut, Check, Lock, Zap, Shield, UserCircle2, Sparkles, Menu, X, Music, VolumeX } from 'lucide-react';
 import styles from './Chat.module.css';
 import Message from './Message';
 import MessageInput from './MessageInput';
@@ -27,11 +27,39 @@ const Chat = ({
   const [copied, setCopied] = useState(false);
   const [inviteCopied, setInviteCopied] = useState(false);
   const [showSidebar, setShowSidebar] = useState(false);
+  const [isMusicPlaying, setIsMusicPlaying] = useState(false);
   
   const messagesEndRef = useRef(null);
   const messagesContainerRef = useRef(null);
   const voiceCallRef = useRef(null);
+  const audioRef = useRef(null);
   const isUserScrolledUpRef = useRef(false);
+
+  useEffect(() => {
+    // Subtle Lo-Fi track for background ambiance
+    audioRef.current = new Audio('https://assets.mixkit.co/music/preview/mixkit-chill-bro-89.mp3');
+    audioRef.current.loop = true;
+    audioRef.current.volume = 0.15;
+    
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current = null;
+      }
+    };
+  }, []);
+
+  const toggleMusic = () => {
+    if (!audioRef.current) return;
+    if (isMusicPlaying) {
+      audioRef.current.pause();
+      setIsMusicPlaying(false);
+    } else {
+      audioRef.current.play().then(() => {
+        setIsMusicPlaying(true);
+      }).catch(e => console.log('Audio play blocked:', e));
+    }
+  };
 
   // Analyze sentiment on new messages
   useEffect(() => {
@@ -208,14 +236,33 @@ const Chat = ({
     audio.play().catch(e => console.log('Sound blocked by browser'));
   };
 
+  // --- Tab Notification Logic ---
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (!document.hidden) {
+        document.title = 'Privio - Private Space';
+      }
+    };
+    
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    // Cleanup and reset on unmount
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      document.title = 'Privio - Private Space';
+    };
+  }, []);
+
   useEffect(() => {
     if (chat.length > 0) {
       const lastMsg = chat[chat.length - 1];
       if (lastMsg.senderId !== currentUserId) {
+        if (document.hidden) {
+          document.title = '(1) New Message - Privio';
+        }
         playPopSound();
       }
     }
-  }, [chat.length]);
+  }, [chat.length, currentUserId]);
 
   const handleSendMessage = (msg) => {
     if (msg) triggerSparkles(msg);
@@ -342,6 +389,14 @@ const Chat = ({
             </div>
           </div>
           <div className={styles.headerActions}>
+            <button 
+              onClick={toggleMusic}
+              className={`${styles.callBtn} ${isMusicPlaying ? styles.inCall : ''}`}
+              title={isMusicPlaying ? "Stop Music" : "Play Lo-Fi"}
+            >
+              {isMusicPlaying ? <VolumeX size={16} /> : <Music size={16} />}
+              <span>BGM</span>
+            </button>
             <button 
               onClick={isCallActive ? handleEndCall : handleStartCall}
               className={`${styles.callBtn} ${isCallActive ? styles.inCall : ''}`}

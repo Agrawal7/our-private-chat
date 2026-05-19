@@ -3,6 +3,35 @@ import { motion } from 'framer-motion';
 import { Reply, Check, CheckCheck } from 'lucide-react';
 import styles from './Message.module.css';
 
+const LinkifiedText = ({ text }) => {
+  if (!text) return null;
+  // Match URLs starting with http:// or https://
+  const urlRegex = /(https?:\/\/[^\s]+)/g;
+  const parts = text.split(urlRegex);
+  
+  return (
+    <>
+      {parts.map((part, i) => {
+        if (part.match(urlRegex)) {
+          return (
+            <a 
+              key={i} 
+              href={part} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className={styles.messageLink}
+              onClick={(e) => e.stopPropagation()}
+            >
+              {part}
+            </a>
+          );
+        }
+        return part;
+      })}
+    </>
+  );
+};
+
 const Message = ({ message, isOwn, onReply, currentUserId, onScrollToMessage }) => {
   const [dragOffset, setDragOffset] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
@@ -123,7 +152,7 @@ const Message = ({ message, isOwn, onReply, currentUserId, onScrollToMessage }) 
               </div>
             )}
 
-            {message.message && <div className={styles.text}>{message.message}</div>}
+            {message.message && <div className={styles.text}><LinkifiedText text={message.message} /></div>}
             
             <div className={styles.meta}>
               <span className={styles.time}>{message.time}</span>
@@ -142,4 +171,10 @@ const Message = ({ message, isOwn, onReply, currentUserId, onScrollToMessage }) 
   );
 };
 
-export default Message;
+export default React.memo(Message, (prevProps, nextProps) => {
+  return (
+    prevProps.message.id === nextProps.message.id &&
+    prevProps.message.status === nextProps.message.status &&
+    prevProps.isOwn === nextProps.isOwn
+  );
+});
