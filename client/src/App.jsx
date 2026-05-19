@@ -12,6 +12,8 @@ function App() {
   const [chat, setChat] = useState([]);
   const [typingUser, setTypingUser] = useState('');
   const [onlineUsers, setOnlineUsers] = useState(1);
+  const [isMusicPlaying, setIsMusicPlaying] = useState(false);
+  const audioRef = useRef(null);
   const [isConnected, setIsConnected] = useState(false);
   const [currentUserId, setCurrentUserId] = useState(null);
   const [otherUser, setOtherUser] = useState(null);
@@ -41,6 +43,45 @@ function App() {
       document.removeEventListener('keydown', handleKeyDown);
     };
   }, []);
+
+  // Global BGM Logic: Play on first interaction anywhere in the app
+  useEffect(() => {
+    audioRef.current = new Audio('/bgm/bgm.mp3');
+    audioRef.current.loop = true;
+    audioRef.current.volume = 0.15;
+
+    const handleFirstInteraction = () => {
+      if (audioRef.current && audioRef.current.paused) {
+        audioRef.current.play().then(() => {
+          setIsMusicPlaying(true);
+        }).catch(e => console.log('Autoplay blocked:', e));
+      }
+      document.removeEventListener('click', handleFirstInteraction);
+      document.removeEventListener('keydown', handleFirstInteraction);
+    };
+
+    document.addEventListener('click', handleFirstInteraction);
+    document.addEventListener('keydown', handleFirstInteraction);
+
+    return () => {
+      document.removeEventListener('click', handleFirstInteraction);
+      document.removeEventListener('keydown', handleFirstInteraction);
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current = null;
+      }
+    };
+  }, []);
+
+  const toggleMusic = () => {
+    if (!audioRef.current) return;
+    if (isMusicPlaying) {
+      audioRef.current.pause();
+      setIsMusicPlaying(false);
+    } else {
+      audioRef.current.play().then(() => setIsMusicPlaying(true)).catch(e => console.log(e));
+    }
+  };
 
   useEffect(() => {
     const onConnect = () => {
@@ -180,6 +221,9 @@ function App() {
           currentUserId={currentUserId}
           otherUser={otherUser}
           usersList={usersList}
+          isMusicPlaying={isMusicPlaying}
+          toggleMusic={toggleMusic}
+          globalAudioRef={audioRef}
         />
       )}
     </div>

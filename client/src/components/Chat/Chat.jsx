@@ -18,6 +18,9 @@ const Chat = ({
   onLeave,
   currentUserId,
   otherUser,
+  isMusicPlaying,
+  toggleMusic,
+  globalAudioRef
 }) => {
   const [isCallActive, setIsCallActive] = useState(false);
   const [incomingCall, setIncomingCall] = useState(null);
@@ -27,63 +30,22 @@ const Chat = ({
   const [copied, setCopied] = useState(false);
   const [inviteCopied, setInviteCopied] = useState(false);
   const [showSidebar, setShowSidebar] = useState(false);
-  const [isMusicPlaying, setIsMusicPlaying] = useState(false);
   
   const messagesEndRef = useRef(null);
   const messagesContainerRef = useRef(null);
   const voiceCallRef = useRef(null);
-  const audioRef = useRef(null);
   const isUserScrolledUpRef = useRef(false);
-
-  useEffect(() => {
-    // Custom BGM file from public folder
-    audioRef.current = new Audio('/bgm/bgm.mp3');
-    audioRef.current.loop = true;
-    audioRef.current.volume = 0.15;
-    
-    // Attempt autoplay because they interacted with the previous screen
-    const playPromise = audioRef.current.play();
-    if (playPromise !== undefined) {
-      playPromise.then(() => {
-        setIsMusicPlaying(true);
-      }).catch(error => {
-        console.log("Autoplay prevented by browser. User needs to interact first.", error);
-        setIsMusicPlaying(false);
-      });
-    }
-    
-    return () => {
-      if (audioRef.current) {
-        audioRef.current.pause();
-        audioRef.current = null;
-      }
-    };
-  }, []);
 
   // Professionally lower BGM volume during an active voice call
   useEffect(() => {
-    if (audioRef.current) {
+    if (globalAudioRef?.current) {
       if (isCallActive) {
-        // Fade out slightly during call
-        audioRef.current.volume = 0.03;
+        globalAudioRef.current.volume = 0.03;
       } else {
-        // Restore normal ambient volume
-        audioRef.current.volume = 0.15;
+        globalAudioRef.current.volume = 0.15;
       }
     }
-  }, [isCallActive]);
-
-  const toggleMusic = () => {
-    if (!audioRef.current) return;
-    if (isMusicPlaying) {
-      audioRef.current.pause();
-      setIsMusicPlaying(false);
-    } else {
-      audioRef.current.play().then(() => {
-        setIsMusicPlaying(true);
-      }).catch(e => console.log('Audio play blocked:', e));
-    }
-  };
+  }, [isCallActive, globalAudioRef]);
 
   // Analyze sentiment on new messages
   useEffect(() => {
