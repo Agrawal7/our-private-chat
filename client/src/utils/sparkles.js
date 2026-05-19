@@ -109,7 +109,7 @@ const TRIGGERS = {
       'hurt', 'pain', 'sorry', '😢', '😭', '💔', '😞', '😥'
     ],
     fire: (opts = {}) => {
-      const tear = confetti.shapeFromText({ text: '💧' });
+      const tear = confetti.shapeFromText({ text: '😭' });
       confetti({
         particleCount: 40,
         spread: 60,
@@ -128,8 +128,8 @@ const TRIGGERS = {
       '😡', '🤬', '😤', '💢'
     ],
     fire: (opts = {}) => {
-      const anger = confetti.shapeFromText({ text: '💢' });
-      const curse = confetti.shapeFromText({ text: '🤬' });
+      const anger = confetti.shapeFromText({ text: '😤' });
+      const curse = confetti.shapeFromText({ text: '😡' });
       confetti({
         particleCount: 50,
         spread: 100,
@@ -212,7 +212,7 @@ const TRIGGERS = {
     ],
     fire: (opts = {}) => {
       const sickFace = confetti.shapeFromText({ text: '🤢' });
-      const vomitFace = confetti.shapeFromText({ text: '🤮' });
+      const vomitFace = confetti.shapeFromText({ text: '🤧' });
       confetti({
         particleCount: 40,
         spread: 80,
